@@ -15,37 +15,29 @@
         android:text="Название города"
         android:textSize="34sp"></TextView>
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/weather_forecasts_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
+        android:paddingTop="50sp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/morning"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Прогноз на утро"
-            android:textSize="30sp"></TextView>
-        <TextView
-            android:id="@+id/noon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Прогноз на день"
-            android:textSize="30sp"></TextView>
-        <TextView
-            android:id="@+id/evening"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Прогноз на вечер"
-            android:textSize="30sp"></TextView>
-        <TextView
-            android:id="@+id/night"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Прогноз на ночь"
-            android:textSize="30sp"></TextView>
+    <FrameLayout
+        android:id="@+id/forecasts_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:textSize="30sp"
+        tools:visibility="visible">
 
-    </LinearLayout>
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
 
 </FrameLayout>

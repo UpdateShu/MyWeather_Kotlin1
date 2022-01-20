@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.geekbrains.myweather_kotlin1.R
 import com.geekbrains.myweather_kotlin1.databinding.MainActivityBinding
+import com.geekbrains.myweather_kotlin1.model.City
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(binding.root)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, WeatherFragment.newInstance())
+                .replace(R.id.container, WeatherFragment.newInstance(Bundle()))
                 .commit()
         }
         binding.btnCities.setOnClickListener(this@MainActivity)
