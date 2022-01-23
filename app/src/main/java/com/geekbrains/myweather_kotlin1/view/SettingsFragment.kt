@@ -1,4 +1,4 @@
-package com.geekbrains.myweather_kotlin1.ui.main
+package com.geekbrains.myweather_kotlin1.view
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -7,25 +7,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.geekbrains.myweather_kotlin1.R
+import com.geekbrains.myweather_kotlin1.viewmodel.SettingsViewModel
 
-class MainFragment : Fragment() {
+class SettingsFragment : Fragment() {
 
     companion object {
-        fun newInstance() = MainFragment()
+        fun newInstance() = SettingsFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: SettingsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+    ): View? {
+        return inflater.inflate(R.layout.settings_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
