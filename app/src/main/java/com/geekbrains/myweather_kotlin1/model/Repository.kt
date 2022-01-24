@@ -1,30 +1,20 @@
 package com.geekbrains.myweather_kotlin1.model
 
-import com.geekbrains.myweather_kotlin1.model.Forecast.*
-import com.geekbrains.myweather_kotlin1.viewmodel.AppState
+import com.geekbrains.myweather_kotlin1.model.forecast.*
 
-class Repository : IRepository {
+object Repository : IRepository {
 
-    companion object {
-        fun instance() = Repository()
+    private val _cities : ArrayList<City> by lazy {
+        arrayListOf(City(1, "Москва", 55.7558, 37.6173),
+            City(2, "Волгоград",48.7194, 44.5018),
+            City(3, "Волжский", 48.7858, 44.7797))
     }
-
-    private var _cities : ArrayList<City>? = null
 
     override fun getCities() = _cities!!
 
-    private var _city : City? = null
+    private val _city : City by lazy { getCities()[2] }
 
-    override fun getCurrentCity() = _city!!
-
-    init {
-        _cities = arrayListOf(City(1, "Москва", 55.7558, 37.6173),
-            City(2, "Волгоград",48.7194, 44.5018),
-            City(3, "Волжский", 48.7858, 44.7797))
-
-        val cityIndex = 2
-        _city = _cities!!.get(cityIndex)
-    }
+    override fun getCurrentCity() = _city
 
     override fun getWeatherForecasts(city: City): MutableList<DayTimeWeatherForecast> {
 
