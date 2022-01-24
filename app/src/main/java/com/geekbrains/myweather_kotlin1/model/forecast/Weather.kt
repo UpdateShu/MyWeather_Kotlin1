@@ -1,4 +1,4 @@
-package com.geekbrains.myweather_kotlin1.model.Forecast
+package com.geekbrains.myweather_kotlin1.model.forecast
 
 class Weather(val weatherEvent: WeatherEvent, val temp: Int) {
 

@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(binding.root)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, WeatherFragment.newInstance(Bundle()))
+                .replace(R.id.container, WeatherFragment().also { it.arguments = Bundle() })
                 .commit()
         }
         binding.btnCities.setOnClickListener(this@MainActivity)
