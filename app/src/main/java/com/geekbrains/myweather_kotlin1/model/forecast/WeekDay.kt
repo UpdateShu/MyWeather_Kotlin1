@@ -1,4 +1,4 @@
-package com.geekbrains.myweather_kotlin1.model.Forecast
+package com.geekbrains.myweather_kotlin1.model.forecast
 
 enum class WeekDay(val dayIndex : Int, val dayName : String, val shortName: String) {
     MONDAY(0, "Понедельник", "Пн"),

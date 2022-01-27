@@ -1,5 +1,6 @@
 package com.geekbrains.myweather_kotlin1.view
 
+import android.os.Build
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,33 +8,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.geekbrains.myweather_kotlin1.R
 import com.geekbrains.myweather_kotlin1.databinding.CitiesFragmentBinding
 import com.geekbrains.myweather_kotlin1.databinding.WeatherFragmentBinding
 import com.geekbrains.myweather_kotlin1.model.City
+import com.geekbrains.myweather_kotlin1.model.showLoading
+import com.geekbrains.myweather_kotlin1.model.showSnackBar
 import com.geekbrains.myweather_kotlin1.viewmodel.AppState
 import com.geekbrains.myweather_kotlin1.viewmodel.WeatherViewModel
+import kotlinx.android.synthetic.main.weather_fragment.*
 
 class WeatherFragment : Fragment() {
 
     companion object {
-
         const val BUNDLE_EXTRA = "city"
-
-        fun newInstance(bundle: Bundle): WeatherFragment {
-            val fragment = WeatherFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
     }
 
     private var _binding: WeatherFragmentBinding? = null
 
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: WeatherViewModel
+    private var currentCity : City? = null
+
+    private val viewModel: WeatherViewModel by lazy {
+        ViewModelProvider(this)[WeatherViewModel::class.java]
+    }
 
     private val adapter = WeatherFragmentAdapter()
 
@@ -45,34 +47,54 @@ class WeatherFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.weatherForecastsView.adapter = adapter
-        viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
-
-        val observer = Observer<AppState> {  data ->
-            renderData(data)
-        }
-        with(viewModel) {
-            getLiveData().observe(viewLifecycleOwner, observer)
-            val city = arguments?.getParcelable<City>(BUNDLE_EXTRA)
-            getWeatherForecasts(city)
-        }
+        binding.city.setOnClickListener { changeCity() }
+        currentCity = arguments?.getParcelable(BUNDLE_EXTRA)
+        viewModel.getLiveData().observe(viewLifecycleOwner, { data -> renderData(data) })
+        refreshWeather()
     }
 
+    private fun changeCity() {
+        activity?.supportFragmentManager?.let { manager -> manager.beginTransaction()
+            .replace(R.id.container, CitiesFragment().also {
+                    fragment -> fragment.arguments = Bundle().also { bundle -> bundle.putParcelable(CitiesFragment.BUNDLE_EXTRA, currentCity) }
+            })
+            .addToBackStack("")
+            .commit() }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun refreshWeather() {
+        viewModel.getWeatherForecasts(currentCity)
+    }
+
+    var firstLoading : Boolean = true
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun renderData(state: AppState) {
         when (state){
             is AppState.Success -> {
-                binding.forecastsLoading.visibility = View.GONE
-                binding.weatherForecastsView.isVisible = true
-                binding.city.text = state.appData.currentCity?.name
+                currentCity = state.appData.currentCity
+                with(binding) {
+                    forecastsLoading.visibility = View.GONE
+                    weatherForecastsView.isVisible = true
+                    city.text = currentCity?.name
+                }
                 adapter.setWeatherForecasts(state.appData.weatherForecasts)
+                firstLoading = true
             }
             is AppState.Loading -> {
-                Toast.makeText(context, "Loading!", Toast.LENGTH_SHORT).show()
+                context?.showLoading(R.string.loading_message)
             }
             is AppState.Error -> {
-                Toast.makeText(context, "Error!", Toast.LENGTH_SHORT).show()
+                binding.city.showSnackBar(R.string.loading_error)
+                if (firstLoading) {
+                    binding.weatherForecastsView.showSnackBar(getString(R.string.loading_error),
+                        getString(R.string.repeat_loading), { refreshWeather() })
+                }
+                firstLoading = false
             }
         }
     }

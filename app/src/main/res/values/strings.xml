@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">MyWeather_Kotlin1</string>
+    <string name="loading_message">Загрузка</string>
+    <string name="loading_error">Ошибка загрузки</string>
+    <string name="repeat_loading">Попробовать ещё</string>
 </resources>
