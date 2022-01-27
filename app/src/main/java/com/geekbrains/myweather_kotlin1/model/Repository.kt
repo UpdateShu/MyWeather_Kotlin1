@@ -1,13 +1,33 @@
 package com.geekbrains.myweather_kotlin1.model
 
+import android.os.Build
+import android.os.Handler
+import android.util.Log
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.MutableLiveData
 import com.geekbrains.myweather_kotlin1.model.forecast.*
+import com.geekbrains.myweather_kotlin1.viewmodel.AppState
+import com.google.gson.Gson
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.MalformedURLException
+import java.net.URL
+import java.security.AccessController.getContext
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
+import java.util.stream.Collectors
+import javax.net.ssl.HttpsURLConnection
+import kotlin.collections.ArrayList
 
 object Repository : IRepository {
 
     private val _cities : ArrayList<City> by lazy {
-        arrayListOf(City(1, "Москва", 55.7558, 37.6173),
+        arrayListOf(City(1, "Москва", 55.755888, 37.617333),
             City(2, "Волгоград",48.7194, 44.5018),
-            City(3, "Волжский", 48.7858, 44.7797))
+            City(3, "Волжский", 48.785888, 44.779777))
     }
 
     override fun getCities() = _cities!!
@@ -16,28 +36,32 @@ object Repository : IRepository {
 
     override fun getCurrentCity() = _city
 
+    override fun loadWeatherForecasts(city: City, liveDataToObserve: MutableLiveData<AppState>) {
+        TODO("Not yet implemented")
+    }
+
     override fun getWeatherForecasts(city: City): MutableList<DayTimeWeatherForecast> {
 
         val weatherForecast : MutableList<DayTimeWeatherForecast>
 
         weatherForecast = arrayListOf(
-            DayTimeWeatherForecast(DaysTime.Morning, Weather(WeatherEvent.Wind(speed = 3), 2)),
-            DayTimeWeatherForecast(DaysTime.Noon, Weather(WeatherEvent.Wind(speed = 5), 0)),
-            DayTimeWeatherForecast(DaysTime.Evening, Weather(WeatherEvent.Rain(volume = 5), 1)),
-            DayTimeWeatherForecast(DaysTime.Night, Weather(WeatherEvent.Rain(volume = 10), 0))
+            DayTimeWeatherForecast(DaysTime.Morning, Weather(WeatherEvent.Wind(speed = 3.2), 2)),
+            DayTimeWeatherForecast(DaysTime.Noon, Weather(WeatherEvent.Wind(speed = 5.5), 0)),
+            DayTimeWeatherForecast(DaysTime.Evening, Weather(WeatherEvent.Rain(volume = 5.0), 1)),
+            DayTimeWeatherForecast(DaysTime.Night, Weather(WeatherEvent.Rain(volume = 10.5), 0))
         )
 
         return weatherForecast
     }
 
     override fun getWeekWeatherForecasts(city: City) : MutableList<DayWeatherForecast> {
-
         val dayWeatherForecasts : MutableList<DayWeatherForecast> = arrayListOf()
-        for (weekDay in WeekDay.values()) {
 
+        for (weekDay in WeekDay.values()) {
             val dayWeatherForecast = getRandomDayWeatherForecasts(weekDay)
             dayWeatherForecasts.add(dayWeatherForecast)
         }
+
         return dayWeatherForecasts
     }
 
@@ -49,7 +73,6 @@ object Repository : IRepository {
             val timeWeatherForecast = DayTimeWeatherForecast(daysTime, Weather.randomWeather())
             timeWeatherForecasts.add(timeWeatherForecast)
         }
-
         return DayWeatherForecast(weekDay, timeWeatherForecasts)
     }
 }

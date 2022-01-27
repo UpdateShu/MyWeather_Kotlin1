@@ -6,15 +6,15 @@ sealed class WeatherEvent(val name: String) {
         override fun toString() = "$name"
     }
 
-    data class Wind(val speed: Int) : WeatherEvent("Ветер") {
+    data class Wind(val speed: Double) : WeatherEvent("Ветер") {
         override fun toString() = "$name ($speed м/с)"
     }
 
-    data class Rain(val volume: Int) : WeatherEvent("Дождь") {
+    data class Rain(val volume: Double) : WeatherEvent("Дождь") {
         override fun toString(): String = "$name ($volume мм)"
     }
 
-    data class Snow(val speed: Int) : WeatherEvent("Снег") {
-        override fun toString(): String = "$name ($speed см/ч)"
+    data class Snow(val volume: Double) : WeatherEvent("Снег") {
+        override fun toString(): String = "$name ($volume мм)"
     }
 }

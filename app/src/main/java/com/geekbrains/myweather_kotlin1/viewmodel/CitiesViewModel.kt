@@ -14,8 +14,8 @@ class CitiesViewModel(private val liveDataToObserve : MutableLiveData<AppState> 
     fun getCities(currentCity: City?) {
         liveDataToObserve.postValue(AppState.Loading)
         Thread{
-            Thread.sleep(500)
-            when ((0..1).random()) {
+            Thread.sleep(200)
+            when ((0..0).random()) {
                 0 -> {
                     liveDataToObserve.postValue(AppState.Success(AppData().also { data ->
                         data.currentCity = currentCity

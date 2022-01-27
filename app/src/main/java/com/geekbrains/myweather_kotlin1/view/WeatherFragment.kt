@@ -1,5 +1,6 @@
 package com.geekbrains.myweather_kotlin1.view
 
+import android.os.Build
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.geekbrains.myweather_kotlin1.R
@@ -45,6 +47,7 @@ class WeatherFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.weatherForecastsView.adapter = adapter
@@ -63,10 +66,13 @@ class WeatherFragment : Fragment() {
             .commit() }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun refreshWeather() {
-        currentCity?.let { viewModel.getWeatherForecasts(currentCity) }
+        viewModel.getWeatherForecasts(currentCity)
     }
 
+    var firstLoading : Boolean = true
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun renderData(state: AppState) {
         when (state){
             is AppState.Success -> {
@@ -77,16 +83,18 @@ class WeatherFragment : Fragment() {
                     city.text = currentCity?.name
                 }
                 adapter.setWeatherForecasts(state.appData.weatherForecasts)
+                firstLoading = true
             }
             is AppState.Loading -> {
                 context?.showLoading(R.string.loading_message)
             }
             is AppState.Error -> {
                 binding.city.showSnackBar(R.string.loading_error)
-                refreshWeather()
-
-                //binding.weatherForecastsView.showSnackBar(getString(R.string.loading_error),
-                    //getString(R.string.repeat_loading), { refreshWeather() })
+                if (firstLoading) {
+                    binding.weatherForecastsView.showSnackBar(getString(R.string.loading_error),
+                        getString(R.string.repeat_loading), { refreshWeather() })
+                }
+                firstLoading = false
             }
         }
     }

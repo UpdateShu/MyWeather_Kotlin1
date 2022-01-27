@@ -6,14 +6,23 @@ class Weather(val weatherEvent: WeatherEvent, val temp: Int) {
 
         fun randomWeather() : Weather {
 
-            val event = when((0..2).random()) {
-                0 -> WeatherEvent.Wind((0..20).random())
-                1 -> WeatherEvent.Rain((1..10).random())
-                2-> WeatherEvent.Snow((1..30).random())
-                else -> WeatherEvent.Clear()
-            }
+            val event = WeatherEvent.Clear()
 
             return Weather(event, (-20..30).random())
+        }
+
+        fun fromDTO(timeWeatherDTO: TimeWeatherDTO) = Weather(getWeatherEvent(timeWeatherDTO), timeWeatherDTO?.temp_avg ?: 0)
+
+        private fun getWeatherEvent(timeDTO: TimeWeatherDTO) : WeatherEvent {
+            timeDTO?.condition?.let {
+                if (timeDTO.condition.contains("snow"))
+                    return WeatherEvent.Snow(timeDTO.prec_mm)
+                if (timeDTO.condition.contains("rain"))
+                    return WeatherEvent.Rain(timeDTO.prec_mm)
+                if (timeDTO.wind_speed >= 2)
+                    return WeatherEvent.Wind(timeDTO.wind_speed)
+            }
+            return WeatherEvent.Clear()
         }
     }
 }
