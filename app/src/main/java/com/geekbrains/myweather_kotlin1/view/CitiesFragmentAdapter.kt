@@ -1,6 +1,7 @@
 package com.geekbrains.myweather_kotlin1.view
 
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,35 +22,23 @@ class CitiesFragmentAdapter(private var onItemViewClickListener: OnCityItemViewC
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
-    ): CitiesViewHolder {
-        return CitiesViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_city, parent, false) as View
-        )
-    }
+        viewType: Int) = CitiesViewHolder(LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_city, parent, false) as View)
 
     override fun onBindViewHolder(holder: CitiesViewHolder, position: Int) {
         holder.bind(cities[position])
     }
 
-    override fun getItemCount(): Int {
-        return cities.size
-    }
+    override fun getItemCount(): Int = cities.size
 
     inner class CitiesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(city: City) {
-            itemView.findViewById<TextView>(R.id.city_name).text = city.name
-            itemView.setOnClickListener {
-                Toast.makeText(
-                    itemView.context,
-                    city.name,
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-            itemView.setOnClickListener {
-                onItemViewClickListener?.onCityItemViewClick(city)
+            itemView.apply {
+                findViewById<TextView>(R.id.city_name).text = city.name
+                setOnClickListener {
+                    onItemViewClickListener?.onCityItemViewClick(city)
+                }
             }
         }
     }
