@@ -17,9 +17,9 @@ class WeatherViewModel(
     @RequiresApi(Build.VERSION_CODES.N)
     fun getWeatherForecasts(selectedCity: City?) {
         liveDataToObserve.postValue(AppState.Loading)
-        when ((0..1).random()) {
+        when ((0..0).random()) {
             0 -> {
-                WebRepository.loadWeatherForecasts(selectedCity ?: Repository.getCurrentCity(), liveDataToObserve)
+                //Repository.getWeatherForecasts(selectedCity ?: Repository.getCurrentCity(), liveDataToObserve)
             }
             1 -> {
                 liveDataToObserve.postValue(AppState.Error(Throwable("No success!")))

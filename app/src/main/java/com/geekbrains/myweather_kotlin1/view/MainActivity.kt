@@ -1,7 +1,15 @@
 package com.geekbrains.myweather_kotlin1.view
 
+import ThreadsFragment
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
@@ -33,7 +41,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val fragment = when (v?.id) {
             R.id.btnCities -> CitiesFragment()
             R.id.btnWeather -> WeatherFragment()
-            R.id.btnSettings -> SettingsFragment()
+            R.id.btnSettings -> ThreadsFragment()
             else -> { }
         }
         supportFragmentManager

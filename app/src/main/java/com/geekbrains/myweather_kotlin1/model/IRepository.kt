@@ -9,9 +9,4 @@ interface IRepository {
 
     fun getCities() : ArrayList<City>
     fun getCurrentCity() : City
-
-    fun loadWeatherForecasts(city: City, liveDataToObserve : MutableLiveData<AppState>)
-
-    fun getWeekWeatherForecasts(city: City) : MutableList<DayWeatherForecast>
-    fun getWeatherForecasts(city: City) : MutableList<DayTimeWeatherForecast>
 }

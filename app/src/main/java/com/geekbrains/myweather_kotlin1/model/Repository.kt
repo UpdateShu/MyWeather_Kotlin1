@@ -36,11 +36,7 @@ object Repository : IRepository {
 
     override fun getCurrentCity() = _city
 
-    override fun loadWeatherForecasts(city: City, liveDataToObserve: MutableLiveData<AppState>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getWeatherForecasts(city: City): MutableList<DayTimeWeatherForecast> {
+    /*override fun getWeatherForecasts(city: City): MutableList<DayTimeWeatherForecast> {
 
         val weatherForecast : MutableList<DayTimeWeatherForecast>
 
@@ -74,5 +70,26 @@ object Repository : IRepository {
             timeWeatherForecasts.add(timeWeatherForecast)
         }
         return DayWeatherForecast(weekDay, timeWeatherForecasts)
+    }*/
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    public fun getWeatherForecasts(weatherDTO: WeatherDTO) : MutableList<DayWeatherForecast> {
+        val weatherForecasts : MutableList<DayWeatherForecast> = arrayListOf()
+        if (weatherDTO.forecasts == null)
+            return weatherForecasts
+
+        for (forecast in weatherDTO.forecasts!!) {
+            val date = LocalDate.parse(forecast.date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            val day = WeekDay.values()[date.dayOfWeek.ordinal]
+
+            val timeWeatherForecasts : MutableList<DayTimeWeatherForecast> = arrayListOf()
+            timeWeatherForecasts.add(DayTimeWeatherForecast(DaysTime.Morning, Weather.fromDTO(forecast.parts!!.morning)))
+            timeWeatherForecasts.add(DayTimeWeatherForecast(DaysTime.Noon, Weather.fromDTO(forecast.parts!!.day)))
+            timeWeatherForecasts.add(DayTimeWeatherForecast(DaysTime.Evening, Weather.fromDTO(forecast.parts!!.evening)))
+            timeWeatherForecasts.add(DayTimeWeatherForecast(DaysTime.Night, Weather.fromDTO(forecast.parts!!.night)))
+
+            weatherForecasts.add((DayWeatherForecast(day, timeWeatherForecasts)))
+        }
+        return weatherForecasts
     }
 }
