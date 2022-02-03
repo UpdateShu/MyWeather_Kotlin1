@@ -1,14 +1,13 @@
 package com.geekbrains.myweather_kotlin1.view
 
+import com.geekbrains.myweather_kotlin1.presentation.ThreadsFragment
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.geekbrains.myweather_kotlin1.R
 import com.geekbrains.myweather_kotlin1.databinding.MainActivityBinding
-import com.geekbrains.myweather_kotlin1.model.City
+import com.geekbrains.myweather_kotlin1.presentation.weather.WeatherFragment
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -20,7 +19,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(binding.root)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, WeatherFragment.newInstance(Bundle()))
+                .replace(R.id.container, WeatherFragment().also { it.arguments = Bundle() })
                 .commit()
         }
         binding.btnCities.setOnClickListener(this@MainActivity)
@@ -33,7 +32,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val fragment = when (v?.id) {
             R.id.btnCities -> CitiesFragment()
             R.id.btnWeather -> WeatherFragment()
-            R.id.btnSettings -> SettingsFragment()
+            R.id.btnSettings -> ThreadsFragment()
             else -> { }
         }
         supportFragmentManager
