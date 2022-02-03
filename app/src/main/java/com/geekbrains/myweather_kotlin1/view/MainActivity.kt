@@ -1,22 +1,13 @@
 package com.geekbrains.myweather_kotlin1.view
 
-import ThreadsFragment
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
+import com.geekbrains.myweather_kotlin1.presentation.ThreadsFragment
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.geekbrains.myweather_kotlin1.R
 import com.geekbrains.myweather_kotlin1.databinding.MainActivityBinding
-import com.geekbrains.myweather_kotlin1.model.City
+import com.geekbrains.myweather_kotlin1.presentation.weather.WeatherFragment
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 

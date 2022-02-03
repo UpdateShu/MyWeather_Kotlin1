@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import com.geekbrains.myweather_kotlin1.model.forecast.DayWeatherForecast
 import com.google.android.material.snackbar.Snackbar
 
 fun View.showSnackBar(

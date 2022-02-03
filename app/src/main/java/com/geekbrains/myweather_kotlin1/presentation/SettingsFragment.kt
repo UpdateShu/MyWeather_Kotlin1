@@ -1,4 +1,4 @@
-package com.geekbrains.myweather_kotlin1.view
+package com.geekbrains.myweather_kotlin1.presentation
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.geekbrains.myweather_kotlin1.R
-import com.geekbrains.myweather_kotlin1.viewmodel.SettingsViewModel
 
 class SettingsFragment : Fragment() {
 

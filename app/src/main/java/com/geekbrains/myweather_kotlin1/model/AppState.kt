@@ -1,4 +1,4 @@
-package com.geekbrains.myweather_kotlin1.viewmodel
+package com.geekbrains.myweather_kotlin1.model
 
 sealed class AppState {
 

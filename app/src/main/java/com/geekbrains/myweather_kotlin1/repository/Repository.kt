@@ -1,33 +1,22 @@
-package com.geekbrains.myweather_kotlin1.model
+package com.geekbrains.myweather_kotlin1.repository
 
 import android.os.Build
-import android.os.Handler
-import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.MutableLiveData
+import com.geekbrains.myweather_kotlin1.model.City
 import com.geekbrains.myweather_kotlin1.model.forecast.*
-import com.geekbrains.myweather_kotlin1.viewmodel.AppState
-import com.google.gson.Gson
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.MalformedURLException
-import java.net.URL
-import java.security.AccessController.getContext
-import java.text.SimpleDateFormat
+import com.geekbrains.myweather_kotlin1.model.forecast.dto.WeatherDTO
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
-import java.util.stream.Collectors
-import javax.net.ssl.HttpsURLConnection
 import kotlin.collections.ArrayList
 
 object Repository : IRepository {
 
     private val _cities : ArrayList<City> by lazy {
-        arrayListOf(City(1, "Москва", 55.755888, 37.617333),
+        arrayListOf(
+            City(1, "Москва", 55.755888, 37.617333),
             City(2, "Волгоград",48.7194, 44.5018),
-            City(3, "Волжский", 48.785888, 44.779777))
+            City(3, "Волжский", 48.785888, 44.779777)
+        )
     }
 
     override fun getCities() = _cities!!
@@ -72,7 +61,7 @@ object Repository : IRepository {
         return DayWeatherForecast(weekDay, timeWeatherForecasts)
     }*/
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    /*@RequiresApi(Build.VERSION_CODES.O)
     public fun getWeatherForecasts(weatherDTO: WeatherDTO) : MutableList<DayWeatherForecast> {
         val weatherForecasts : MutableList<DayWeatherForecast> = arrayListOf()
         if (weatherDTO.forecasts == null)
@@ -91,5 +80,5 @@ object Repository : IRepository {
             weatherForecasts.add((DayWeatherForecast(day, timeWeatherForecasts)))
         }
         return weatherForecasts
-    }
+    }*/
 }

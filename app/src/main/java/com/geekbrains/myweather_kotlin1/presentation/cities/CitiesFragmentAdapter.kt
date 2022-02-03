@@ -1,15 +1,14 @@
-package com.geekbrains.myweather_kotlin1.view
+package com.geekbrains.myweather_kotlin1.presentation.cities
 
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.geekbrains.myweather_kotlin1.R
 import com.geekbrains.myweather_kotlin1.model.City
+import com.geekbrains.myweather_kotlin1.view.OnCityItemViewClickListener
 
 class CitiesFragmentAdapter(private var onItemViewClickListener: OnCityItemViewClickListener?): RecyclerView.Adapter<CitiesFragmentAdapter.CitiesViewHolder>() {
 

@@ -1,3 +1,5 @@
+package com.geekbrains.myweather_kotlin1.presentation
+
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler

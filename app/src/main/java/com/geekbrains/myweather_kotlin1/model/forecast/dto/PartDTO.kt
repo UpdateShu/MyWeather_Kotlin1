@@ -1,4 +1,4 @@
-package com.geekbrains.myweather_kotlin1.model.forecast
+package com.geekbrains.myweather_kotlin1.model.forecast.dto
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

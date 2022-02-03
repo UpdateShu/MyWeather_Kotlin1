@@ -1,11 +1,12 @@
-package com.geekbrains.myweather_kotlin1.view
+package com.geekbrains.myweather_kotlin1.repository
 
 import android.app.IntentService
 import android.content.Intent
 import android.os.Build
 import android.os.Parcelable
 import androidx.annotation.RequiresApi
-import com.geekbrains.myweather_kotlin1.model.forecast.WeatherDTO
+import com.geekbrains.myweather_kotlin1.BuildConfig
+import com.geekbrains.myweather_kotlin1.model.forecast.dto.WeatherDTO
 import com.google.gson.Gson
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -18,12 +19,26 @@ const val LATITUDE_EXTRA = "Latitude"
 const val LONGITUDE_EXTRA = "Longitude"
 private const val REQUEST_GET = "GET"
 private const val REQUEST_TIMEOUT = 10000
-private const val YOUR_API_KEY = "1b1206d3-40ea-41d0-a443-adf1da771cbc"
 
+private const val YOUR_API_KEY = BuildConfig.WEATHER_API_KEY
+private const val REQUEST_API_KEY = "X-Yandex-API-Key"
+private const val MAIN_LINK = "https://api.weather.yandex.ru/v2/forecast?"
+
+const val WEATHER_INTENT_FILTER = "WEATHER INTENT FILTER"
+const val WEATHER_LOAD_RESULT_EXTRA = "LOAD RESULT"
+const val WEATHER_INTENT_EMPTY_EXTRA = "INTENT IS EMPTY"
+const val WEATHER_DATA_EMPTY_EXTRA = "DATA IS EMPTY"
+const val WEATHER_RESPONSE_EMPTY_EXTRA = "RESPONSE IS EMPTY"
+const val WEATHER_RESPONSE_SUCCESS_EXTRA = "RESPONSE SUCCESS"
+const val WEATHER_DTO_EXTRA = "WEATHER_DTO"
+const val WEATHER_URL_MALFORMED_EXTRA = "URL MALFORMED"
+const val WEATHER_REQUEST_ERROR_EXTRA = "REQUEST ERROR"
+const val WEATHER_REQUEST_ERROR_MESSAGE_EXTRA = "REQUEST ERROR MESSAGE"
+
+@RequiresApi(Build.VERSION_CODES.N)
 class WeatherService(name: String = "WeatherService") : IntentService(name)  {
     private val broadcastIntent = Intent(WEATHER_INTENT_FILTER)
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onHandleIntent(intent: Intent?) {
         if (intent == null) {
             onEmptyIntent()
@@ -45,7 +60,6 @@ class WeatherService(name: String = "WeatherService") : IntentService(name)  {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     private fun loadWeatherForecasts(lat: String, lon: String)
     {
         try {
@@ -75,7 +89,6 @@ class WeatherService(name: String = "WeatherService") : IntentService(name)  {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     private fun getLines(reader: BufferedReader): String {
         return reader.lines().collect(Collectors.joining("\n"))
     }

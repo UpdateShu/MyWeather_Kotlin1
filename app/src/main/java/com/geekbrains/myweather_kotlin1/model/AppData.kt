@@ -1,6 +1,5 @@
-package com.geekbrains.myweather_kotlin1.viewmodel
+package com.geekbrains.myweather_kotlin1.model
 
-import com.geekbrains.myweather_kotlin1.model.City
 import com.geekbrains.myweather_kotlin1.model.forecast.DayWeatherForecast
 
 data class AppData(

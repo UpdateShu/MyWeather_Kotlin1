@@ -1,4 +1,4 @@
-package com.geekbrains.myweather_kotlin1.view
+package com.geekbrains.myweather_kotlin1.presentation.weather
 
 import android.os.Build
 import androidx.lifecycle.ViewModelProvider
@@ -10,15 +10,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
 import com.geekbrains.myweather_kotlin1.R
-import com.geekbrains.myweather_kotlin1.databinding.CitiesFragmentBinding
 import com.geekbrains.myweather_kotlin1.databinding.WeatherFragmentBinding
 import com.geekbrains.myweather_kotlin1.model.City
-import com.geekbrains.myweather_kotlin1.model.showLoading
 import com.geekbrains.myweather_kotlin1.model.showSnackBar
-import com.geekbrains.myweather_kotlin1.viewmodel.AppState
-import com.geekbrains.myweather_kotlin1.viewmodel.WeatherViewModel
 import kotlinx.android.synthetic.main.weather_fragment.*
 import android.content.Intent
 
@@ -28,22 +23,17 @@ import android.util.Log
 import android.net.ConnectivityManager
 
 import android.content.IntentFilter
-import android.net.Network
 import android.net.NetworkInfo
-import com.geekbrains.myweather_kotlin1.model.Repository
-import com.geekbrains.myweather_kotlin1.model.forecast.WeatherDTO as WeatherDTO
+import android.os.Handler
+import com.bumptech.glide.Glide
+import com.geekbrains.myweather_kotlin1.BuildConfig
+import com.geekbrains.myweather_kotlin1.model.AppState
+import com.geekbrains.myweather_kotlin1.model.forecast.DayWeatherForecast
+import com.geekbrains.myweather_kotlin1.model.showLoading
+import com.geekbrains.myweather_kotlin1.repository.Repository
+import com.geekbrains.myweather_kotlin1.view.CitiesFragment
 
-const val WEATHER_INTENT_FILTER = "WEATHER INTENT FILTER"
-const val WEATHER_LOAD_RESULT_EXTRA = "LOAD RESULT"
-const val WEATHER_INTENT_EMPTY_EXTRA = "INTENT IS EMPTY"
-const val WEATHER_DATA_EMPTY_EXTRA = "DATA IS EMPTY"
-const val WEATHER_RESPONSE_EMPTY_EXTRA = "RESPONSE IS EMPTY"
-const val WEATHER_RESPONSE_SUCCESS_EXTRA = "RESPONSE SUCCESS"
-const val WEATHER_DTO_EXTRA = "WEATHER_DTO"
-const val WEATHER_URL_MALFORMED_EXTRA = "URL MALFORMED"
-const val WEATHER_REQUEST_ERROR_EXTRA = "REQUEST ERROR"
-const val WEATHER_REQUEST_ERROR_MESSAGE_EXTRA = "REQUEST ERROR MESSAGE"
-
+@RequiresApi(Build.VERSION_CODES.N)
 class WeatherFragment : Fragment() {
 
     companion object {
@@ -72,7 +62,7 @@ class WeatherFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    /*@RequiresApi(Build.VERSION_CODES.O)
     private val loadResultsReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
 
@@ -87,7 +77,7 @@ class WeatherFragment : Fragment() {
                 else -> onError()
             }
         }
-    }
+    }*/
 
     private var _binding: WeatherFragmentBinding? = null
 
@@ -95,9 +85,9 @@ class WeatherFragment : Fragment() {
 
     private var currentCity : City? = null
 
-    /*private val viewModel: WeatherViewModel by lazy {
+    private val viewModel: WeatherViewModel by lazy {
         ViewModelProvider(this)[WeatherViewModel::class.java]
-    }*/
+    }
 
     private val adapter = WeatherFragmentAdapter()
 
@@ -105,7 +95,7 @@ class WeatherFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        context?.registerReceiver(loadResultsReceiver, IntentFilter(WEATHER_INTENT_FILTER))
+        //context?.registerReceiver(loadResultsReceiver, IntentFilter(WEATHER_INTENT_FILTER))
         context?.registerReceiver(networkChangeReceiver, IntentFilter().also {
             it.addAction(ConnectivityManager.CONNECTIVITY_ACTION) })
     }
@@ -115,34 +105,46 @@ class WeatherFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = WeatherFragmentBinding.inflate(inflater, container, false)
-        return binding.root
+        Glide.with(requireContext())
+            .load("https://luculentia.ru/luc-up/uploads/2018/04/1.jpg")
+                .into(binding.weatherBack)
+                    return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.weatherForecastsView.adapter = adapter
-        binding.city.setOnClickListener { changeCity() }
-
+        with(binding) {
+            weatherForecastsView.adapter = adapter
+            city.setOnClickListener { changeCity() }
+        }
         currentCity = arguments?.getParcelable(BUNDLE_EXTRA) ?: Repository.getCurrentCity()
-        //viewModel.getLiveData().observe(viewLifecycleOwner, { data -> renderData(data) })
+
+        viewModel.weatherLiveData.observe(viewLifecycleOwner, { data -> renderData(data) })
         refreshWeather()
     }
 
     private fun changeCity() {
         activity?.supportFragmentManager?.let { manager -> manager.beginTransaction()
             .replace(R.id.container, CitiesFragment().also {
-                    fragment -> fragment.arguments = Bundle().also { bundle -> bundle.putParcelable(CitiesFragment.BUNDLE_EXTRA, currentCity) }
+                    fragment -> fragment.arguments = Bundle().also { bundle -> bundle.putParcelable(
+                CitiesFragment.BUNDLE_EXTRA, currentCity) }
             })
             .addToBackStack("")
             .commit() }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun refreshWeather() {
         //viewModel.getWeatherForecasts(currentCity)
-        currentCity?.let { city ->
-            context?.let {
+        currentCity?.let { newCity ->
+            with(binding) {
+                forecastsLoading.visibility = View.VISIBLE
+                weatherForecastsView.isVisible = false
+                city.text = newCity.name
+            }
+            viewModel.getWeatherFromRemoteSource(newCity.lat, newCity.lon)
+            /*context?.let {
                 context?.showLoading(R.string.loading_message)
                 it.startService(Intent(it, WeatherService::class.java).apply {
                     putExtra(
@@ -154,43 +156,64 @@ class WeatherFragment : Fragment() {
                         city.lon
                     )
                 })
-            }
+            }*/
+            /*val client = OkHttpClient() // Клиент
+            val builder: Request.Builder = Request.Builder() // Создаём строителя запроса
+            builder.header(REQUEST_API_KEY, BuildConfig.WEATHER_API_KEY) // Создаём заголовок запроса
+            builder.url(MAIN_LINK + "lat=${currentCity!!.lat}&lon=${currentCity!!.lon}") // Формируем URL
+            val request: Request = builder.build() // Создаём запрос
+            val call: Call = client.newCall(request) // Ставим запрос в очередь и отправляем
+            call.enqueue(object : Callback {
+
+                val handler: Handler = Handler()
+
+                // Вызывается, если ответ от сервера пришёл
+                @Throws(IOException::class)
+                override fun onResponse(call: Call?, response: Response) {
+                    val serverResponse: String? = response.body()?.string()
+                    // Синхронизируем поток с потоком UI
+                    if (response.isSuccessful && serverResponse != null) {
+                        handler.post {
+                            displayWeather(Gson().fromJson(serverResponse, WeatherDTO::class.java))
+                        }
+                    } else {
+                        //TODO(PROCESS_ERROR)
+                    }
+                }
+
+                // Вызывается при сбое в процессе запроса на сервер
+                override fun onFailure(call: Call?, e: IOException?) {
+                    //TODO(PROCESS_ERROR)
+                }
+            })*/
         }
     }
 
     var firstLoading : Boolean = true
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun displayWeather(weatherDTO: WeatherDTO?) {
-
-        with(binding) {
-            forecastsLoading.visibility = View.GONE
-            weatherForecastsView.isVisible = true
-            city.text = currentCity?.name
-        }
-        weatherDTO?.let {
-            val forecasts = Repository.getWeatherForecasts(weatherDTO)
-            adapter.setWeatherForecasts(forecasts)
-        }
+    private fun displayWeatherForecasts(weatherForecasts: MutableList<DayWeatherForecast>) {
+        showLoading(false)
+        adapter.setWeatherForecasts(weatherForecasts)
         firstLoading = true
     }
 
-    /*@RequiresApi(Build.VERSION_CODES.N)
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun renderData(state: AppState) {
         when (state){
             is AppState.Success -> {
-                currentCity = state.appData.currentCity
-                with(binding) {
-                    forecastsLoading.visibility = View.GONE
-                    weatherForecastsView.isVisible = true
-                    city.text = currentCity?.name
-                }
+                currentCity = state.appData.currentCity ?: currentCity
+                binding.city.text = currentCity?.name
+
+                showLoading(false)
                 adapter.setWeatherForecasts(state.appData.weatherForecasts)
                 firstLoading = true
             }
             is AppState.Loading -> {
-                context?.showLoading(R.string.loading_message)
+                showLoading(true)
             }
             is AppState.Error -> {
+                showLoading(false)
                 binding.city.showSnackBar(R.string.loading_error)
                 if (firstLoading) {
                     binding.weatherForecastsView.showSnackBar(getString(R.string.loading_error),
@@ -199,11 +222,21 @@ class WeatherFragment : Fragment() {
                 firstLoading = false
             }
         }
-    }*/
+    }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    private fun showLoading(isLoading : Boolean) {
+        with(binding) {
+            forecastsLoading.isVisible = isLoading
+            weatherForecastsView.isVisible = !isLoading
+        }
+        if (isLoading) {
+            context?.showLoading(R.string.loading_message)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun onError(){
-        binding.city.showSnackBar(R.string.loading_error)
+        //binding.city.showSnackBar(R.string.loading_error)
         if (firstLoading) {
             binding.weatherForecastsView.showSnackBar(getString(R.string.loading_error),
                 getString(R.string.repeat_loading), { refreshWeather() })
@@ -215,7 +248,6 @@ class WeatherFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         context?.unregisterReceiver(networkChangeReceiver)
-        context?.unregisterReceiver(loadResultsReceiver)
         _binding = null
     }
 }

@@ -1,28 +1,22 @@
 package com.geekbrains.myweather_kotlin1.view
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
 import com.geekbrains.myweather_kotlin1.R
 import com.geekbrains.myweather_kotlin1.databinding.CitiesFragmentBinding
 import com.geekbrains.myweather_kotlin1.model.City
 import com.geekbrains.myweather_kotlin1.model.showLoading
+import com.geekbrains.myweather_kotlin1.presentation.cities.CitiesFragmentAdapter
+import com.geekbrains.myweather_kotlin1.presentation.weather.WeatherFragment
+import com.geekbrains.myweather_kotlin1.model.AppState
 import com.geekbrains.myweather_kotlin1.model.showSnackBar
-import com.geekbrains.myweather_kotlin1.viewmodel.AppState
-import com.geekbrains.myweather_kotlin1.viewmodel.CitiesViewModel
-import com.geekbrains.myweather_kotlin1.viewmodel.WeatherViewModel
+import com.geekbrains.myweather_kotlin1.presentation.cities.CitiesViewModel
 
 class CitiesFragment : Fragment() {
 
@@ -44,7 +38,8 @@ class CitiesFragment : Fragment() {
         override fun onCityItemViewClick(city: City) {
             activity?.supportFragmentManager?.let { manager -> manager.beginTransaction()
                 .replace(R.id.container, WeatherFragment().also {
-                        fragment -> fragment.arguments = Bundle().also { bundle -> bundle.putParcelable(WeatherFragment.BUNDLE_EXTRA, city) }
+                        fragment -> fragment.arguments = Bundle().also { bundle -> bundle.putParcelable(
+                    WeatherFragment.BUNDLE_EXTRA, city) }
                 })
                 .addToBackStack("")
                 .commit() }
