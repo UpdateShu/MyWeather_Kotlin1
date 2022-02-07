@@ -1,5 +1,7 @@
 package com.geekbrains.myweather_kotlin1.repository
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.geekbrains.myweather_kotlin1.model.City
@@ -15,13 +17,21 @@ object Repository : IRepository {
         arrayListOf(
             City(1, "Москва", 55.755888, 37.617333),
             City(2, "Волгоград",48.7194, 44.5018),
-            City(3, "Волжский", 48.785888, 44.779777)
-        )
+            City(3, "Волжский", 48.785888, 44.779777),
+            City(4,"Санкт-Петербург", 59.9342802, 30.3350986),
+            City(5, "Ростов-на-Дону", 47.235714, 39.701505),
+            City(6, "Екатеринбург", 56.838926, 60.605703),
+            City(7, "Нижний Новгород", 56.296504, 43.936059),
+            City(8, "Казань", 55.83043, 49.06608),
+            City(9, "Челябинск", 55.1644412, 61.436843),
+            City(10,"Омск", 54.98848, 73.324236))
     }
 
     override fun getCities() = _cities!!
 
-    private val _city : City by lazy { getCities()[2] }
+    private val _city : City by lazy {
+        getCities()[2]
+    }
 
     override fun getCurrentCity() = _city
 

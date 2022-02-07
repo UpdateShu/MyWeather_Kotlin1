@@ -1,24 +1,23 @@
 package com.geekbrains.myweather_kotlin1.presentation.weather
 
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.geekbrains.myweather_kotlin1.model.forecast.*
-import com.geekbrains.myweather_kotlin1.repository.IWeatherRepository
-import com.geekbrains.myweather_kotlin1.repository.RemoteDataSource
-import com.geekbrains.myweather_kotlin1.repository.WeatherRepository
 import com.geekbrains.myweather_kotlin1.model.AppData
 import com.geekbrains.myweather_kotlin1.model.AppState
-import com.geekbrains.myweather_kotlin1.model.forecast.dto.TimeWeatherDTO
+import com.geekbrains.myweather_kotlin1.model.City
 import com.geekbrains.myweather_kotlin1.model.forecast.dto.WeatherDTO
-import com.geekbrains.myweather_kotlin1.repository.Repository
+import com.geekbrains.myweather_kotlin1.presentation.App
+import com.geekbrains.myweather_kotlin1.repository.*
+import com.geekbrains.myweather_kotlin1.utils.Constants
+import com.geekbrains.myweather_kotlin1.utils.convertDtoToModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 private const val SERVER_ERROR = "Ошибка сервера"
 private const val REQUEST_ERROR = "Ошибка запроса на сервер"
@@ -32,13 +31,19 @@ class WeatherViewModel(
 
     val weatherLiveData: LiveData<AppState> get() = mutableWeatherLiveData
 
+    private val localRepository: ILocalRepository = LocalRepository(App.getHistoryDao())
+
+    fun saveCurrentCity(city: City, preferences: SharedPreferences) = localRepository.saveCurrentCity(city, preferences)
+
+    fun getCurrentCity(preferences: SharedPreferences) = localRepository.getCurrentCity(preferences)
+
     private val callBack = object :
         Callback<WeatherDTO> {
 
         override fun onResponse(call: Call<WeatherDTO>, response: Response<WeatherDTO>) {
             val serverResponse: WeatherDTO? = response.body()
             mutableWeatherLiveData.postValue(
-                if (response.isSuccessful && serverResponse != null && (0..1).random() == 0) {
+                if (response.isSuccessful && serverResponse != null) {
                     checkResponse(serverResponse)
                 } else {
                     AppState.Error(Throwable(SERVER_ERROR))
@@ -56,39 +61,19 @@ class WeatherViewModel(
                 AppState.Error(Throwable(CORRUPTED_DATA))
             } else {
                 AppState.Success(
-                    AppData().apply { weatherForecasts = convertDtoToModel(serverResponse) } )
+                    AppData().apply { weekWeather = convertDtoToModel(serverResponse)
+                        } )
             }
         }
     }
 
     fun getWeatherFromRemoteSource(lat: Double, lon: Double) {
+        this.
         mutableWeatherLiveData.value = AppState.Loading
         weatherRepository.getWeatherForecastsFromServer(lat, lon, callBack)
     }
 
-    public fun convertDtoToModel(weatherDTO: WeatherDTO) : MutableList<DayWeatherForecast> {
-        val weatherForecasts : MutableList<DayWeatherForecast> = arrayListOf()
-        if (weatherDTO.forecasts == null)
-            return weatherForecasts
-
-        for (forecast in weatherDTO.forecasts!!) {
-            val date = LocalDate.parse(forecast.date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-            val day = WeekDay.values()[date.dayOfWeek.ordinal]
-
-            val timeWeatherForecasts : MutableList<DayTimeWeatherForecast> = arrayListOf()
-            addTimeWeatherForecast(DaysTime.Morning, forecast.parts!!.morning, timeWeatherForecasts)
-            addTimeWeatherForecast(DaysTime.Noon, forecast.parts!!.day, timeWeatherForecasts)
-            addTimeWeatherForecast(DaysTime.Evening, forecast.parts!!.evening, timeWeatherForecasts)
-            addTimeWeatherForecast(DaysTime.Night, forecast.parts!!.night, timeWeatherForecasts)
-
-            weatherForecasts.add((DayWeatherForecast(day, timeWeatherForecasts)))
-        }
-        return weatherForecasts
+    fun saveHistory(city: City?, weekWeather: WeekWeather){
+        city?.let { localRepository.saveHistory(city, weekWeather) }
     }
-}
-
-private fun addTimeWeatherForecast(daysTime: DaysTime, timeWeatherDTO : TimeWeatherDTO,
-                                   timeWeatherForecasts: MutableList<DayTimeWeatherForecast>) {
-    timeWeatherForecasts.add(DayTimeWeatherForecast(daysTime, Weather.fromDTO(timeWeatherDTO,
-        "https://yastatic.net/weather/i/icons/funky/dark/${timeWeatherDTO.icon}.svg")))
 }

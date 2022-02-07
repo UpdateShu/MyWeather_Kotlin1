@@ -17,14 +17,12 @@ class WeatherFragmentAdapter : RecyclerView.Adapter<WeatherFragmentAdapter.Weath
 
     private var dayWeatherForecasts: List<DayWeatherForecast> = listOf()
 
-    fun setWeatherForecasts(data: List<DayWeatherForecast>) {
+    fun setWeatherForecasts(data: MutableList<DayWeatherForecast>) {
         dayWeatherForecasts = data
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int) = WeatherViewHolder(LayoutInflater.from(parent.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = WeatherViewHolder(LayoutInflater.from(parent.context)
             .inflate(R.layout.item_weather, parent, false) as View)
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {

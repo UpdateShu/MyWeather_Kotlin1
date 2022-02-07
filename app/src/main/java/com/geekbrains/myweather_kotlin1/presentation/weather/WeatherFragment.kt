@@ -30,7 +30,9 @@ import com.geekbrains.myweather_kotlin1.BuildConfig
 import com.geekbrains.myweather_kotlin1.model.AppState
 import com.geekbrains.myweather_kotlin1.model.forecast.DayWeatherForecast
 import com.geekbrains.myweather_kotlin1.model.showLoading
+import com.geekbrains.myweather_kotlin1.presentation.cities.CitiesViewModel
 import com.geekbrains.myweather_kotlin1.repository.Repository
+import com.geekbrains.myweather_kotlin1.utils.Constants
 import com.geekbrains.myweather_kotlin1.view.CitiesFragment
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -83,10 +85,21 @@ class WeatherFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private var currentCity : City? = null
+    private var _currentcity : City? = null
+        @RequiresApi(Build.VERSION_CODES.O)
+        get() = viewModel.getCurrentCity(requireContext()
+            .getSharedPreferences(Constants.CITIES_PREFERENCES, Context.MODE_PRIVATE))
+        @RequiresApi(Build.VERSION_CODES.O)
+        set(value) {
+            value?.let { viewModel.saveCurrentCity(value, requireContext()
+                .getSharedPreferences(Constants.CITIES_PREFERENCES, Context.MODE_PRIVATE)) }
+            field = value
+        }
+
+    private val currentCity get() = _currentcity
 
     private val viewModel: WeatherViewModel by lazy {
-        ViewModelProvider(this)[WeatherViewModel::class.java]
+        ViewModelProvider(this).get(WeatherViewModel::class.java)
     }
 
     private val adapter = WeatherFragmentAdapter()
@@ -118,8 +131,7 @@ class WeatherFragment : Fragment() {
             weatherForecastsView.adapter = adapter
             city.setOnClickListener { changeCity() }
         }
-        currentCity = arguments?.getParcelable(BUNDLE_EXTRA) ?: Repository.getCurrentCity()
-
+        arguments?.getParcelable<City>(BUNDLE_EXTRA)?.let { _currentcity = it }
         viewModel.weatherLiveData.observe(viewLifecycleOwner, { data -> renderData(data) })
         refreshWeather()
     }
@@ -197,16 +209,18 @@ class WeatherFragment : Fragment() {
         firstLoading = true
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     private fun renderData(state: AppState) {
         when (state){
             is AppState.Success -> {
-                currentCity = state.appData.currentCity ?: currentCity
+                _currentcity = state.appData.currentCity ?: currentCity
                 binding.city.text = currentCity?.name
 
                 showLoading(false)
-                adapter.setWeatherForecasts(state.appData.weatherForecasts)
+                state.appData.weekWeather?.let {
+                    adapter.setWeatherForecasts(state.appData.weekWeather!!.forecasts)
+                    viewModel.saveHistory(currentCity, state.appData.weekWeather!!)
+                    }
                 firstLoading = true
             }
             is AppState.Loading -> {

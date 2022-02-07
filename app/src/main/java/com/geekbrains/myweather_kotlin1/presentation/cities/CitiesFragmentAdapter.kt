@@ -4,13 +4,24 @@ package com.geekbrains.myweather_kotlin1.presentation.cities
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.geekbrains.myweather_kotlin1.R
 import com.geekbrains.myweather_kotlin1.model.City
 import com.geekbrains.myweather_kotlin1.view.OnCityItemViewClickListener
+import org.w3c.dom.Text
 
 class CitiesFragmentAdapter(private var onItemViewClickListener: OnCityItemViewClickListener?): RecyclerView.Adapter<CitiesFragmentAdapter.CitiesViewHolder>() {
+
+    public var editor: Boolean = false
+        private set(value) {
+            field = value
+        }
+        get() = field
 
     private var cities: List<City> = listOf()
 
@@ -34,11 +45,32 @@ class CitiesFragmentAdapter(private var onItemViewClickListener: OnCityItemViewC
 
         fun bind(city: City) {
             itemView.apply {
-                findViewById<TextView>(R.id.city_name).text = city.name
                 setOnClickListener {
-                    onItemViewClickListener?.onCityItemViewClick(city)
+                    if (!editor) { onItemViewClickListener?.onCityItemViewClick(city) }
+                }
+                setOnLongClickListener({
+                    editor = !editor;
+                    notifyDataSetChanged()
+                    true })
+            }
+            changeCityStyle(itemView, city)
+            itemView.findViewById<CheckBox>(R.id.check_city).apply {
+                visibility = if (editor) View.VISIBLE else View.INVISIBLE
+                isChecked = city.isChecked
+                text = city.name
+                setOnCheckedChangeListener { chb, isChecked ->
+                    city.isChecked = chb.isChecked
+                    changeCityStyle(itemView, city)
+                    Toast.makeText(context, "${city.name}, ${chb.text}", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+
+    fun changeCityStyle(view: View, city : City) {
+        view.findViewById<TextView>(R.id.city_name).apply {
+            text = city.name
+            setTextAppearance(if (city.isChecked) {R.style.CheckedCityStyle} else {R.style.CityStyle})
         }
     }
 

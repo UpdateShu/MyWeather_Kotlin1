@@ -1,5 +1,6 @@
 package com.geekbrains.myweather_kotlin1.view
 
+import android.os.Build
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import com.geekbrains.myweather_kotlin1.R
 import com.geekbrains.myweather_kotlin1.databinding.CitiesFragmentBinding
@@ -35,8 +37,10 @@ class CitiesFragment : Fragment() {
     }
 
     private val adapter = CitiesFragmentAdapter(object : OnCityItemViewClickListener {
+        @RequiresApi(Build.VERSION_CODES.N)
         override fun onCityItemViewClick(city: City) {
-            activity?.supportFragmentManager?.let { manager -> manager.beginTransaction()
+            activity?.supportFragmentManager?.let {
+                manager -> manager.beginTransaction()
                 .replace(R.id.container, WeatherFragment().also {
                         fragment -> fragment.arguments = Bundle().also { bundle -> bundle.putParcelable(
                     WeatherFragment.BUNDLE_EXTRA, city) }
@@ -54,9 +58,11 @@ class CitiesFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.citiesView.adapter = adapter
+
         currentCity = arguments?.getParcelable(WeatherFragment.BUNDLE_EXTRA)
         viewModel.getLiveData().observe(viewLifecycleOwner, { data -> loadCitiesData(data) })
         refreshCities()
