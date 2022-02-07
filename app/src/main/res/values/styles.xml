@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="DayTimeStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">100dp</item>
+        <item name="android:layout_columnWeight">1</item>
+    </style>
+
+    <style name="CheckedCityStyle">
+        <item name="android:textColor">@color/teal_200</item>
+    </style>
+
+    <style name="CityStyle">
+        <item name="android:textColor">@color/design_default_color_primary_dark</item>
+    </style>
+
+</resources>

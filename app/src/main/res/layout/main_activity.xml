@@ -8,7 +8,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container"
-        android:name="com.geekbrains.myweather_kotlin1.view.WeatherFragment"
+        android:name="com.geekbrains.myweather_kotlin1.presentation.weather.WeatherFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/teal_200"
@@ -41,11 +41,11 @@
             android:text="Прогноз" />
 
         <Button
-            android:id="@+id/btnSettings"
+            android:id="@+id/btnHistory"
             android:layout_width="wrap_content"
             android:layout_height="65dp"
             android:layout_gravity="bottom|end"
-            android:text="Настройки" />
+            android:text="История" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
