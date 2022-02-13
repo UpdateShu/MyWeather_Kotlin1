@@ -41,7 +41,7 @@
             android:text="Прогноз" />
 
         <Button
-            android:id="@+id/btnHistory"
+            android:id="@+id/btnSettings"
             android:layout_width="wrap_content"
             android:layout_height="65dp"
             android:layout_gravity="bottom|end"

@@ -5,7 +5,7 @@
     <string name="repeat_loading">Попробовать ещё</string>
 
     <dimen name="main_container_text_size">10sp</dimen>
-    и
+
     <string name="threads">Threads</string>
     <string name="in_main_thread">В главном потоке</string>
     <string name="from_thread">Из потока %d</string>
@@ -19,5 +19,9 @@
     <string name="handler_thread">Handler_Thread</string>
     <string name="service">Service</string>
     <string name="service_broadcast">Service + Broadcast</string>
+    <string name="menu_title_history">История</string>
+    <string name="menu_title_contacts">Контакты</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

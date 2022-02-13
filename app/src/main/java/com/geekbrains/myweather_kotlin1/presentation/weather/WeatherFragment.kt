@@ -39,7 +39,7 @@ import com.geekbrains.myweather_kotlin1.view.CitiesFragment
 class WeatherFragment : Fragment() {
 
     companion object {
-        const val BUNDLE_EXTRA = "city"
+        const val EXTRA_CITY = "city"
     }
 
     private val networkChangeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -131,17 +131,16 @@ class WeatherFragment : Fragment() {
             weatherForecastsView.adapter = adapter
             city.setOnClickListener { changeCity() }
         }
-        arguments?.getParcelable<City>(BUNDLE_EXTRA)?.let { _currentcity = it }
+        arguments?.getParcelable<City>(CitiesFragment.EXTRA_CITY)?.let { _currentcity = it }
         viewModel.weatherLiveData.observe(viewLifecycleOwner, { data -> renderData(data) })
         refreshWeather()
     }
 
     private fun changeCity() {
         activity?.supportFragmentManager?.let { manager -> manager.beginTransaction()
-            .replace(R.id.container, CitiesFragment().also {
-                    fragment -> fragment.arguments = Bundle().also { bundle -> bundle.putParcelable(
-                CitiesFragment.BUNDLE_EXTRA, currentCity) }
-            })
+            .replace(R.id.container, CitiesFragment.newInstance(Bundle().also {
+                    bundle -> bundle.putParcelable(EXTRA_CITY, currentCity)
+            }))
             .addToBackStack("")
             .commit() }
     }

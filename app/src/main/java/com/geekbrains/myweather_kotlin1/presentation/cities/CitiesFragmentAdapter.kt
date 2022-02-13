@@ -5,23 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.CompoundButton
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.geekbrains.myweather_kotlin1.R
 import com.geekbrains.myweather_kotlin1.model.City
-import com.geekbrains.myweather_kotlin1.view.OnCityItemViewClickListener
-import org.w3c.dom.Text
+import kotlinx.android.synthetic.main.threads_fragment.view.*
 
-class CitiesFragmentAdapter(private var onItemViewClickListener: OnCityItemViewClickListener?): RecyclerView.Adapter<CitiesFragmentAdapter.CitiesViewHolder>() {
-
-    public var editor: Boolean = false
-        private set(value) {
-            field = value
-        }
-        get() = field
+class CitiesFragmentAdapter(private var editMode: Boolean, private var itemResourceId: Int,
+                            private var onItemViewClickListener: OnCityItemViewClickListener?
+): RecyclerView.Adapter<CitiesFragmentAdapter.CitiesViewHolder>() {
 
     private var cities: List<City> = listOf()
 
@@ -33,7 +26,7 @@ class CitiesFragmentAdapter(private var onItemViewClickListener: OnCityItemViewC
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int) = CitiesViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_city, parent, false) as View)
+                .inflate(itemResourceId, parent, false) as View)
 
     override fun onBindViewHolder(holder: CitiesViewHolder, position: Int) {
         holder.bind(cities[position])
@@ -44,33 +37,39 @@ class CitiesFragmentAdapter(private var onItemViewClickListener: OnCityItemViewC
     inner class CitiesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(city: City) {
-            itemView.apply {
-                setOnClickListener {
-                    if (!editor) { onItemViewClickListener?.onCityItemViewClick(city) }
+            if (!editMode) {
+                itemView.apply {
+                    setOnClickListener {
+                        onItemViewClickListener?.onCityItemViewClick(city)
+                        Toast.makeText(context, "${city.name} ${it.editText}", Toast.LENGTH_SHORT).show()
+                    }
+                    setOnLongClickListener {
+                        editMode = !editMode
+                        onItemViewClickListener?.onLongCityItemViewClick(city)
+                        true }
                 }
-                setOnLongClickListener({
-                    editor = !editor;
-                    notifyDataSetChanged()
-                    true })
             }
-            changeCityStyle(itemView, city)
+            changeCityStyle(itemView, city, editMode)
             itemView.findViewById<CheckBox>(R.id.check_city).apply {
-                visibility = if (editor) View.VISIBLE else View.INVISIBLE
+                visibility = if (editMode) View.VISIBLE else View.INVISIBLE
                 isChecked = city.isChecked
-                text = city.name
+                //text = city.name
                 setOnCheckedChangeListener { chb, isChecked ->
-                    city.isChecked = chb.isChecked
-                    changeCityStyle(itemView, city)
-                    Toast.makeText(context, "${city.name}, ${chb.text}", Toast.LENGTH_SHORT).show()
+                    city.isChecked = isChecked
+                    changeCityStyle(itemView, city, editMode)
+                    onItemViewClickListener?.onCityCheckedChanged(ArrayList(cities.filter { x -> x.isChecked }))
+                        Toast.makeText(context, "${city.name}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    fun changeCityStyle(view: View, city : City) {
+    fun changeCityStyle(view: View, city : City, isEditMode : Boolean) {
         view.findViewById<TextView>(R.id.city_name).apply {
             text = city.name
-            setTextAppearance(if (city.isChecked) {R.style.CheckedCityStyle} else {R.style.CityStyle})
+            if (!isEditMode) {
+                setTextAppearance(if (city.isChecked) {R.style.CheckedCityStyle} else {R.style.CityStyle})
+            }
         }
     }
 

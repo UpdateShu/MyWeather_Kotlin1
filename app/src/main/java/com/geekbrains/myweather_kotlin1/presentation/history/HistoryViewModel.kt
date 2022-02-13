@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.geekbrains.myweather_kotlin1.model.AppData
 import com.geekbrains.myweather_kotlin1.model.AppState
+import com.geekbrains.myweather_kotlin1.model.City
 import com.geekbrains.myweather_kotlin1.presentation.App.Companion.getHistoryDao
 import com.geekbrains.myweather_kotlin1.repository.ILocalRepository
 import com.geekbrains.myweather_kotlin1.repository.LocalRepository
@@ -21,6 +22,14 @@ class HistoryViewModel (
         historyLiveData.value = AppState.Success(AppData().apply {
             currentCity = city
             historyEntities = historyRepository.getCityHistory(city)
+        })
+    }
+
+    fun getCitiesHistory(cities : ArrayList<City>) {
+        historyLiveData.value = AppState.Loading
+        historyRepository
+        historyLiveData.value = AppState.Success(AppData().apply {
+            historyEntities = historyRepository.getCitiesHistory(cities)
         })
     }
 }

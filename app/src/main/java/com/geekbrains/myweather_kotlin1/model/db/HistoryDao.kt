@@ -7,7 +7,10 @@ import androidx.room.OnConflictStrategy.IGNORE
 interface HistoryDao {
 
     @Query("SELECT * FROM HistoryEntity WHERE city LIKE :city")
-    fun  getDataByCity(city: String): List<HistoryEntity>
+    fun getDataByCity(city: String): List<HistoryEntity>
+
+    @Query("SELECT * FROM HistoryEntity WHERE city IN (:cities)")
+    fun getDataByCities(cities: ArrayList<String>) : List<HistoryEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(entity: HistoryEntity)

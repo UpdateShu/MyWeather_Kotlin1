@@ -18,18 +18,11 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/city_name"
-        style="@style/CityStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:padding="@dimen/recycler_item_padding"
         android:paddingStart="40dp"
-        android:textSize="@dimen/recycler_item_text_size"
+        android:textSize="@dimen/recycler_filters_text_size"
         tools:text="Москва" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/recycler_item_line_height"
-        android:layout_marginEnd="@dimen/recycler_item_line_margin_end"
-        android:background="@android:color/darker_gray" />
 </FrameLayout>

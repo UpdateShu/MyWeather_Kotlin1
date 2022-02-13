@@ -44,7 +44,7 @@ class WeatherFragmentAdapter : RecyclerView.Adapter<WeatherFragmentAdapter.Weath
     }
 
     private fun setDayTimeWeather(itemView: View, timeViewId : Int, timeWeather : DayTimeWeatherForecast) {
-        val parent = itemView.findViewById<FrameLayout>(timeViewId)
+            val parent = itemView.findViewById<FrameLayout>(timeViewId)
         val timeView = LayoutInflater.from(parent.context).inflate(R.layout.item_time, parent, true)
         //timeView.findViewById<TextView>(R.id.weatherEvent).text = timeWeather.weather.weatherEvent.name
         timeView.findViewById<TextView>(R.id.temp).text = timeWeather.weather.temp.toString()

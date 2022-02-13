@@ -9,7 +9,8 @@ data class AppData(
     var cities: List<City>,
     var currentCity: City?,
     var weekWeather: WeekWeather?,
-    var historyEntities: MutableList<HistoryForecast>
+    var historyEntities: MutableList<HistoryForecast>,
+    var contacts: MutableList<PhoneContact>
 ) {
-    constructor() : this(emptyList<City>(), null, null, mutableListOf())
+    constructor() : this(emptyList<City>(), null, null, mutableListOf(), mutableListOf())
 }
