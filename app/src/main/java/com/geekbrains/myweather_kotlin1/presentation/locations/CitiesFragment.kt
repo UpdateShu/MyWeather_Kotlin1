@@ -1,3 +1,5 @@
+package com.geekbrains.myweather_kotlin1.presentation.locations
+
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,19 +16,16 @@ import com.geekbrains.myweather_kotlin1.model.AppState
 import com.geekbrains.myweather_kotlin1.model.City
 import com.geekbrains.myweather_kotlin1.model.showLoading
 import com.geekbrains.myweather_kotlin1.model.showSnackBar
-import com.geekbrains.myweather_kotlin1.presentation.cities.CitiesFragmentAdapter
-import com.geekbrains.myweather_kotlin1.presentation.cities.CitiesViewModel
-import com.geekbrains.myweather_kotlin1.presentation.cities.OnCityItemViewClickListener
 
-class CityFiltersFragment : Fragment() {
+class CitiesFragment : Fragment() {
 
     companion object {
         const val CHECKED_CITIES = "cities"
         const val COUNTER = "counter"
         const val KEY_RESULT = "CityFiltersFragment_KEY_RESULT"
 
-        fun newInstance(bundle: Bundle) : CityFiltersFragment {
-            val fragment = CityFiltersFragment()
+        fun newInstance(bundle: Bundle) : CitiesFragment {
+            val fragment = CitiesFragment()
             fragment.arguments = bundle
             return fragment
         }

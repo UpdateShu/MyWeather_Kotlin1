@@ -6,10 +6,8 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.geekbrains.myweather_kotlin1.model.*
 import com.geekbrains.myweather_kotlin1.model.forecast.*
-import com.geekbrains.myweather_kotlin1.model.AppData
-import com.geekbrains.myweather_kotlin1.model.AppState
-import com.geekbrains.myweather_kotlin1.model.City
 import com.geekbrains.myweather_kotlin1.model.forecast.dto.WeatherDTO
 import com.geekbrains.myweather_kotlin1.presentation.App
 import com.geekbrains.myweather_kotlin1.repository.*
@@ -67,10 +65,10 @@ class WeatherViewModel(
         }
     }
 
-    fun getWeatherFromRemoteSource(lat: Double, lon: Double) {
+    fun getWeatherFromRemoteSource(location : WeatherLocation) {
         this.
         mutableWeatherLiveData.value = AppState.Loading
-        weatherRepository.getWeatherForecastsFromServer(lat, lon, callBack)
+        weatherRepository.getWeatherForecastsFromServer(location, callBack)
     }
 
     fun saveHistory(city: City?, weekWeather: WeekWeather){

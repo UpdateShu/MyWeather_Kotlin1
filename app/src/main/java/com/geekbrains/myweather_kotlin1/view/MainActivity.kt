@@ -3,7 +3,6 @@ package com.geekbrains.myweather_kotlin1.view
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.Telephony
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -11,10 +10,10 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.geekbrains.myweather_kotlin1.R
 import com.geekbrains.myweather_kotlin1.databinding.MainActivityBinding
+import com.geekbrains.myweather_kotlin1.presentation.MapsFragment
 import com.geekbrains.myweather_kotlin1.presentation.ThreadsFragment
 import com.geekbrains.myweather_kotlin1.presentation.contacts.ContactsFragment
 import com.geekbrains.myweather_kotlin1.presentation.history.FilterHistoryFragment
-import com.geekbrains.myweather_kotlin1.presentation.history.HistoryFragment
 import com.geekbrains.myweather_kotlin1.presentation.weather.WeatherFragment
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -40,7 +39,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
 
         val fragment = when (v?.id) {
-            R.id.btnCities -> CitiesFragment()
+            R.id.btnCities -> LocationsFragment()
             R.id.btnWeather -> WeatherFragment()
             R.id.btnSettings -> ThreadsFragment()
             else -> { }
@@ -68,6 +67,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.menu_contacts -> {
                 showFragment(ContactsFragment())
+                true
+            }
+            R.id.menu_geo -> {
+                showFragment(MapsFragment())
                 true
             }
             else -> super.onOptionsItemSelected(item)

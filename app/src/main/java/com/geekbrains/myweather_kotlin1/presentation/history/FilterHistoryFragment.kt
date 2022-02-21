@@ -1,6 +1,6 @@
 package com.geekbrains.myweather_kotlin1.presentation.history
 
-import CityFiltersFragment
+import com.geekbrains.myweather_kotlin1.presentation.locations.CitiesFragment
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,14 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.FragmentResultListener
 import com.geekbrains.myweather_kotlin1.R
-import com.geekbrains.myweather_kotlin1.databinding.CityFiltersFragmentBinding
 import com.geekbrains.myweather_kotlin1.databinding.FragmentFilterHistoryBinding
-import com.geekbrains.myweather_kotlin1.databinding.HistoryFragmentBinding
 import com.geekbrains.myweather_kotlin1.model.City
-import com.geekbrains.myweather_kotlin1.presentation.weather.WeatherFragment
-import com.geekbrains.myweather_kotlin1.view.CitiesFragment
 import kotlinx.android.synthetic.main.fragment_filter_history.*
 
 class FilterHistoryFragment : Fragment() {
@@ -48,12 +43,12 @@ class FilterHistoryFragment : Fragment() {
         binding.chbCityFilters.setOnCheckedChangeListener { _, _ -> showCityFilters() }
 
         parentFragmentManager.beginTransaction()
-            .add(R.id.filters_fragment, CityFiltersFragment())
+            .add(R.id.filters_fragment, CitiesFragment())
             .commit()
-        parentFragmentManager.setFragmentResultListener(CityFiltersFragment.KEY_RESULT, viewLifecycleOwner,
+        parentFragmentManager.setFragmentResultListener(CitiesFragment.KEY_RESULT, viewLifecycleOwner,
             {_, result ->
-                val counter = result.getInt(CityFiltersFragment.COUNTER)
-                val cities = result.getParcelableArrayList<City>(CityFiltersFragment.CHECKED_CITIES)
+                val counter = result.getInt(CitiesFragment.COUNTER)
+                val cities = result.getParcelableArrayList<City>(CitiesFragment.CHECKED_CITIES)
                 cities?.let {
                 if (binding.chbCityFilters.isChecked) {
                     refreshHistory(it)

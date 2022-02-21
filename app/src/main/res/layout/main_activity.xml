@@ -21,6 +21,7 @@
         android:id="@+id/manager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -29,23 +30,23 @@
         <Button
             android:id="@+id/btnCities"
             android:layout_width="126dp"
-            android:layout_height="68dp"
+            android:layout_height="60dp"
             android:layout_gravity="bottom|start"
-            android:text="Список городов" />
+            android:text="Локация" />
 
         <Button
             android:id="@+id/btnWeather"
-            android:layout_width="116dp"
-            android:layout_height="69dp"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
             android:layout_gravity="bottom|center"
             android:text="Прогноз" />
 
         <Button
             android:id="@+id/btnSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="65dp"
+            android:layout_width="127dp"
+            android:layout_height="60dp"
             android:layout_gravity="bottom|end"
-            android:text="История" />
+            android:text="Threads" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

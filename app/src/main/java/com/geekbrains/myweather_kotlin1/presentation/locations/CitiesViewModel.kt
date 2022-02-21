@@ -1,4 +1,4 @@
-package com.geekbrains.myweather_kotlin1.presentation.cities
+package com.geekbrains.myweather_kotlin1.presentation.locations
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -9,4 +9,8 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
     android:id="@+id/menu_contacts"
     android:title="@string/menu_title_contacts"
     app:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_geo"
+        android:title="@string/menu_title_maps"
+        app:showAsAction="always"/>
 </menu>

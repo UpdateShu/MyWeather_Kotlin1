@@ -1,7 +1,5 @@
 package com.geekbrains.myweather_kotlin1.presentation.history
 
-import CityFiltersFragment
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,14 +11,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.geekbrains.myweather_kotlin1.R
 import com.geekbrains.myweather_kotlin1.databinding.HistoryFragmentBinding
-import com.geekbrains.myweather_kotlin1.databinding.LoadingLayoutBinding
 import com.geekbrains.myweather_kotlin1.model.AppState
 import com.geekbrains.myweather_kotlin1.model.City
 import com.geekbrains.myweather_kotlin1.model.showSnackBar
-import com.geekbrains.myweather_kotlin1.utils.Constants
-import com.geekbrains.myweather_kotlin1.view.CitiesFragment
 import kotlinx.android.synthetic.main.history_fragment.*
-import kotlinx.android.synthetic.main.loading_layout.view.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 class HistoryFragment : Fragment() {

@@ -1,6 +1,8 @@
 package com.geekbrains.myweather_kotlin1.repository
 
 import com.geekbrains.myweather_kotlin1.BuildConfig
+import com.geekbrains.myweather_kotlin1.model.ILocation
+import com.geekbrains.myweather_kotlin1.model.WeatherLocation
 import com.geekbrains.myweather_kotlin1.model.forecast.dto.WeatherDTO
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
@@ -24,8 +26,8 @@ class RemoteDataSource {
         .build()
         .create(WeatherAPI::class.java)
 
-    fun getWeatherForecasts(lat: Double, lon: Double, callback: Callback<WeatherDTO>) {
-        weatherApi.getWeather(lat, lon).enqueue(callback)
+    fun getWeatherForecasts(location : WeatherLocation, callback: Callback<WeatherDTO>) {
+        weatherApi.getWeather(location.lat, location.lon).enqueue(callback)
     }
 
     private fun createOkHttpClient(interceptor: Interceptor): OkHttpClient {

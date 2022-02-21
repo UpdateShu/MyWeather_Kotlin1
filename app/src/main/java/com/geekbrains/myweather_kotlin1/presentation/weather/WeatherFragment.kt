@@ -12,9 +12,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import com.geekbrains.myweather_kotlin1.R
 import com.geekbrains.myweather_kotlin1.databinding.WeatherFragmentBinding
-import com.geekbrains.myweather_kotlin1.model.City
-import com.geekbrains.myweather_kotlin1.model.showSnackBar
-import kotlinx.android.synthetic.main.weather_fragment.*
 import android.content.Intent
 
 import android.content.BroadcastReceiver
@@ -24,22 +21,23 @@ import android.net.ConnectivityManager
 
 import android.content.IntentFilter
 import android.net.NetworkInfo
-import android.os.Handler
 import com.bumptech.glide.Glide
-import com.geekbrains.myweather_kotlin1.BuildConfig
-import com.geekbrains.myweather_kotlin1.model.AppState
+import com.geekbrains.myweather_kotlin1.model.*
 import com.geekbrains.myweather_kotlin1.model.forecast.DayWeatherForecast
-import com.geekbrains.myweather_kotlin1.model.showLoading
-import com.geekbrains.myweather_kotlin1.presentation.cities.CitiesViewModel
-import com.geekbrains.myweather_kotlin1.repository.Repository
 import com.geekbrains.myweather_kotlin1.utils.Constants
-import com.geekbrains.myweather_kotlin1.view.CitiesFragment
+import com.geekbrains.myweather_kotlin1.view.LocationsFragment
 
 @RequiresApi(Build.VERSION_CODES.N)
 class WeatherFragment : Fragment() {
 
     companion object {
-        const val EXTRA_CITY = "city"
+        const val EXTRA_LOCATION = "location"
+
+        fun newInstance(bundle: Bundle): WeatherFragment {
+            val fragment = WeatherFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
     private val networkChangeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -85,7 +83,7 @@ class WeatherFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private var _currentcity : City? = null
+    private var _currentCity : City? = null
         @RequiresApi(Build.VERSION_CODES.O)
         get() = viewModel.getCurrentCity(requireContext()
             .getSharedPreferences(Constants.CITIES_PREFERENCES, Context.MODE_PRIVATE))
@@ -96,7 +94,21 @@ class WeatherFragment : Fragment() {
             field = value
         }
 
-    private val currentCity get() = _currentcity
+    private val currentCity get() = _currentCity
+
+    private var _currentLocation : WeatherLocation? = null
+        get() = field
+        set(value) {
+            if (value is City) {
+                _currentCity = value
+            }
+            else {
+                field = value
+            }
+        }
+
+    private val currentLocation : WeatherLocation?
+        get() = _currentLocation ?: currentCity
 
     private val viewModel: WeatherViewModel by lazy {
         ViewModelProvider(this).get(WeatherViewModel::class.java)
@@ -129,17 +141,26 @@ class WeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
             weatherForecastsView.adapter = adapter
-            city.setOnClickListener { changeCity() }
+            city.setOnClickListener { changeLocation() }
         }
-        arguments?.getParcelable<City>(CitiesFragment.EXTRA_CITY)?.let { _currentcity = it }
+        val location = arguments?.getParcelable<WeatherLocation>(LocationsFragment.EXTRA_LOCATION)
+        location?.let {
+            if (location is City) {
+                _currentLocation = null
+                _currentCity = it as City
+            }
+            else {
+                _currentLocation = location
+            }
+        }
         viewModel.weatherLiveData.observe(viewLifecycleOwner, { data -> renderData(data) })
         refreshWeather()
     }
 
-    private fun changeCity() {
+    private fun changeLocation() {
         activity?.supportFragmentManager?.let { manager -> manager.beginTransaction()
-            .replace(R.id.container, CitiesFragment.newInstance(Bundle().also {
-                    bundle -> bundle.putParcelable(EXTRA_CITY, currentCity)
+            .replace(R.id.container, LocationsFragment.newInstance(Bundle().also {
+                    bundle -> bundle.putParcelable(EXTRA_LOCATION, currentLocation)
             }))
             .addToBackStack("")
             .commit() }
@@ -148,15 +169,15 @@ class WeatherFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun refreshWeather() {
         //viewModel.getWeatherForecasts(currentCity)
-        currentCity?.let { newCity ->
+        currentLocation?.let { loc ->
             with(binding) {
                 forecastsLoading.visibility = View.VISIBLE
                 weatherForecastsView.isVisible = false
-                city.text = newCity.name
+                city.text = if (loc is City) currentCity?.name else "${loc.lat}, ${loc.lon}"
             }
-            viewModel.getWeatherFromRemoteSource(newCity.lat, newCity.lon)
+            viewModel.getWeatherFromRemoteSource(loc)
             /*context?.let {
-                context?.showLoading(R.string.loading_message)
+                context?.showLoading(R.string)
                 it.startService(Intent(it, WeatherService::class.java).apply {
                     putExtra(
                         LATITUDE_EXTRA,
@@ -212,8 +233,8 @@ class WeatherFragment : Fragment() {
     private fun renderData(state: AppState) {
         when (state){
             is AppState.Success -> {
-                _currentcity = state.appData.currentCity ?: currentCity
-                binding.city.text = currentCity?.name
+                _currentCity = state.appData.currentCity ?: currentCity
+                //binding.city.text = currentCity?.name
 
                 showLoading(false)
                 state.appData.weekWeather?.let {
