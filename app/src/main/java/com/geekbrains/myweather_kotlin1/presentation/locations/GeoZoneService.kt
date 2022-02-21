@@ -83,7 +83,7 @@ class GeoZoneService : Service(),
             }
             val intent = getPendingIntent()
             intent?.let {
-                /*LocationServices.GeofencingApi.addGeofences(mGoogleApiClient!!, build, it)
+               /* LocationServices.GeofencingApi.addGeofences(mGoogleApiClient!!, build, it)
                     .setResultCallback { status ->
                         if (status.isSuccess) {
                             val msg = "Geofences added: " + status.statusMessage

@@ -63,6 +63,9 @@ class LocationsFragment : Fragment() {
 
     private lateinit var map: GoogleMap
 
+    private val myHomeMarker = MyGeoMarker("Volzhsky, my home", 48.782676, 44.776534, 100.0f)
+    private val myJobMarker = MyGeoMarker("Volzhsky, my job", 48.777786, 44.782911, 100.0f)
+
     private val viewModel: LocationsViewModel by lazy {
         ViewModelProvider(this).get(LocationsViewModel::class.java)
     }
@@ -107,7 +110,6 @@ class LocationsFragment : Fragment() {
         addGeoService(myHomeMarker, Geofence.GEOFENCE_TRANSITION_ENTER)
         addGeoService(myHomeMarker, Geofence.GEOFENCE_TRANSITION_EXIT)
 
-        val myJobMarker = MyGeoMarker("Volzhsky, my job", 48.777786, 44.782911, 100.0f)
         addGeoService(myJobMarker, Geofence.GEOFENCE_TRANSITION_ENTER)
         addGeoService(myJobMarker, Geofence.GEOFENCE_TRANSITION_EXIT)
     }
