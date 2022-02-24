@@ -42,6 +42,19 @@
             android:name=".presentation.locations.GeoZoneService"
             android:enabled="true"
             android:exported="true" />
+        <service
+            android:name=".presentation.locations.ReceiveTransitionsIntentService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".presentation.locations.LocationMessageService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+
+        </service>
 
         <activity
             android:name=".view.MainActivity"

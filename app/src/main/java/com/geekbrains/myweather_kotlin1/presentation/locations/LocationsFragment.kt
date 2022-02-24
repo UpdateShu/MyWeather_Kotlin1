@@ -35,8 +35,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import java.io.IOException
 
-import com.geekbrains.myweather_kotlin1.presentation.locations.GeoZoneService
 import android.content.Intent
+import com.geekbrains.myweather_kotlin1.presentation.locations.GeoZoneService
 import com.google.android.gms.location.Geofence
 
 const val REQUEST_CODE = 13
@@ -89,7 +89,7 @@ class LocationsFragment : Fragment() {
 
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
-        val myHomeMarker = MyGeoMarker("Volzhsky, my home", 48.782676, 44.776534, 100.0f)
+
         currentLocation = WeatherLocation(currentCity?.lat ?: myHomeMarker.lat,
             currentCity?.lon ?: myHomeMarker.lon)
         val initialPlace = LatLng(myHomeMarker.lat, myHomeMarker.lon)

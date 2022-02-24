@@ -85,3 +85,4 @@ fun convertHistoryEntityToForecast(city: City, entityList: List<HistoryEntity>):
     })
     return historyForecasts
 }
+

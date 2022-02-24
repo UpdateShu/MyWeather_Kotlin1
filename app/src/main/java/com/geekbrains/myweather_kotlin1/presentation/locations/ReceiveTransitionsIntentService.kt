@@ -6,10 +6,18 @@ import android.app.PendingIntent
 import android.content.Intent
 
 import android.util.Log
+import androidx.core.app.NotificationCompat
+import com.geekbrains.myweather_kotlin1.utils.showNotification
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 
 class ReceiveTransitionsIntentService : IntentService(TRANSITION_INTENT_SERVICE) {
+
+    companion object {
+        private const val CHANNEL_ID = "channel_id"
+        private const val TRANSITION_INTENT_SERVICE = "TransitionsService"
+    }
+
     override fun onHandleIntent(intent: Intent?) {
         val geofencingEvent = GeofencingEvent.fromIntent(intent!!)
         if (geofencingEvent.hasError()) {
@@ -22,30 +30,24 @@ class ReceiveTransitionsIntentService : IntentService(TRANSITION_INTENT_SERVICE)
         val transitionType = geofencingEvent.geofenceTransition
         val triggeredGeofences = geofencingEvent.triggeringGeofences
         for (geofence in triggeredGeofences) {
-            Log.d("GEO", "onHandle:" + geofence.requestId)
-            //processGeofence(geofence, transitionType)
+            val msg = with(geofencingEvent) {
+                "${transitionType} ${triggeringLocation.latitude} ${triggeringLocation.longitude}"
+            }
+            Log.d("GEO", "onHandle: ${geofence.requestId}, ${msg}")
+
+            showGeofence(geofence, transitionType)
         }
     }
 
-    /*private fun processGeofence(geofence: Geofence, transitionType: Int) {
-        val notificationBuilder: NotificationCompat.Builder = Builder(applicationContext)
-        val openActivityIntetnt = PendingIntent.getActivity(
-            this, 0, Intent(
-                this,
-                MainActivity::class.java
-            ), PendingIntent.FLAG_UPDATE_CURRENT
-        )
+    fun showGeofence(geofence: Geofence, transitionType: Int) {
         val id = geofence.requestId.toInt()
         val transitionTypeString = getTransitionTypeString(transitionType)
-        notificationBuilder
-            .setSmallIcon(R.drawable.ic_launcher)
-            .setContentTitle("Geofence id: $id")
-            .setContentText("Transition type: $transitionTypeString")
-            .setVibrate(longArrayOf(500, 500))
-            .setContentIntent(openActivityIntetnt)
-            .setAutoCancel(true)
-        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        nm.notify(transitionType * 100 + id, notificationBuilder.build())
+
+        applicationContext.showNotification("Geofence id: ${id}",
+            "Transition type: $transitionTypeString",
+            transitionType * 100 + id,
+            CHANNEL_ID
+        )
         Log.d("GEO", String.format("notification built:%d %s", id, transitionTypeString))
     }
 
@@ -56,9 +58,5 @@ class ReceiveTransitionsIntentService : IntentService(TRANSITION_INTENT_SERVICE)
             Geofence.GEOFENCE_TRANSITION_DWELL -> "dwell"
             else -> "unknown"
         }
-    }*/
-
-    companion object {
-        const val TRANSITION_INTENT_SERVICE = "TransitionsService"
     }
 }

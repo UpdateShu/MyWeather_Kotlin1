@@ -2,6 +2,7 @@ package com.geekbrains.myweather_kotlin1.presentation.locations
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.IntentService
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import com.geekbrains.myweather_kotlin1.model.MyGeoZone
+import com.geekbrains.myweather_kotlin1.presentation.locations.ReceiveTransitionsIntentService
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.Status
@@ -21,7 +23,6 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import java.io.Serializable
-
 
 class GeoZoneService : Service(),
     GoogleApiClient.ConnectionCallbacks,
@@ -54,14 +55,23 @@ class GeoZoneService : Service(),
             transitionType = newGeoZone.transitionType
             mGeoZonesToAdd.add(newGeoZone.toGeoZone())
         }
+        mGoogleApiClient = getConnectedApiClient()
 
-        mGoogleApiClient = GoogleApiClient.Builder(this).addApi(LocationServices.API)
-            .addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()
-        mGoogleApiClient?.let {
-            it.connect()
-        }
         return super.onStartCommand(intent, flags, startId)
+    }
 
+    private fun getConnectedApiClient() : GoogleApiClient? {
+        var apiClient = mGoogleApiClient
+        if (apiClient == null) {
+            apiClient = GoogleApiClient.Builder(this).addApi(LocationServices.API)
+                .addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()
+        }
+        apiClient?.let {
+            if (!it.isConnected) {
+                it.connect()
+            }
+        }
+        return apiClient
     }
 
     @SuppressLint("MissingPermission")
@@ -83,16 +93,19 @@ class GeoZoneService : Service(),
             }
             val intent = getPendingIntent()
             intent?.let {
-               /* LocationServices.GeofencingApi.addGeofences(mGoogleApiClient!!, build, it)
-                    .setResultCallback { status ->
-                        if (status.isSuccess) {
-                            val msg = "Geofences added: " + status.statusMessage
-                            Log.e("GEO", msg)
-                            Toast.makeText(this@GeoZoneService, msg, Toast.LENGTH_SHORT)
-                                .show()
+                mGoogleApiClient = getConnectedApiClient()
+                mGoogleApiClient?.let { apiClient ->
+                    LocationServices.GeofencingApi.addGeofences(apiClient, build, it)
+                        .setResultCallback { status ->
+                            if (status.isSuccess) {
+                                val msg = "Geofences added: " + status.statusMessage
+                                Log.e("GEO", msg)
+                                Toast.makeText(this@GeoZoneService, msg, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                            this@GeoZoneService.onResult(status)
                         }
-                        this@GeoZoneService.onResult(status)
-                    }*/
+                }
             }
         }
     }
