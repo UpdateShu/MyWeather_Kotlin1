@@ -1,0 +1,94 @@
+package com.geekbrains.myweather_kotlin1.repository
+
+import android.content.Context
+import android.content.SharedPreferences
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.geekbrains.myweather_kotlin1.model.City
+import com.geekbrains.myweather_kotlin1.model.forecast.*
+import com.geekbrains.myweather_kotlin1.model.forecast.dto.WeatherDTO
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import kotlin.collections.ArrayList
+
+object Repository : IRepository {
+
+    private val _cities : ArrayList<City> by lazy {
+        arrayListOf(
+            City(1, "Москва", 55.755888, 37.617333),
+            City(2, "Волгоград",48.7194, 44.5018),
+            City(3, "Волжский", 48.785888, 44.779777),
+            City(4,"Санкт-Петербург", 59.9342802, 30.3350986),
+            City(5, "Ростов-на-Дону", 47.235714, 39.701505),
+            City(6, "Екатеринбург", 56.838926, 60.605703),
+            City(7, "Нижний Новгород", 56.296504, 43.936059),
+            City(8, "Казань", 55.83043, 49.06608),
+            City(9, "Челябинск", 55.1644412, 61.436843),
+            City(10,"Омск", 54.98848, 73.324236))
+    }
+
+    override fun getCities() = _cities!!
+
+    private val _city : City by lazy {
+        getCities()[2]
+    }
+
+    override fun getCurrentCity() = _city
+
+    /*override fun getWeatherForecasts(city: City): MutableList<DayTimeWeatherForecast> {
+
+        val weatherForecast : MutableList<DayTimeWeatherForecast>
+
+        weatherForecast = arrayListOf(
+            DayTimeWeatherForecast(DaysTime.Morning, Weather(WeatherEvent.Wind(speed = 3.2), 2)),
+            DayTimeWeatherForecast(DaysTime.Noon, Weather(WeatherEvent.Wind(speed = 5.5), 0)),
+            DayTimeWeatherForecast(DaysTime.Evening, Weather(WeatherEvent.Rain(volume = 5.0), 1)),
+            DayTimeWeatherForecast(DaysTime.Night, Weather(WeatherEvent.Rain(volume = 10.5), 0))
+        )
+
+        return weatherForecast
+    }
+
+    override fun getWeekWeatherForecasts(city: City) : MutableList<DayWeatherForecast> {
+        val dayWeatherForecasts : MutableList<DayWeatherForecast> = arrayListOf()
+
+        for (weekDay in WeekDay.values()) {
+            val dayWeatherForecast = getRandomDayWeatherForecasts(weekDay)
+            dayWeatherForecasts.add(dayWeatherForecast)
+        }
+
+        return dayWeatherForecasts
+    }
+
+    private fun getRandomDayWeatherForecasts(weekDay: WeekDay) : DayWeatherForecast {
+
+        val timeWeatherForecasts : MutableList<DayTimeWeatherForecast> = arrayListOf()
+        for (daysTime in DaysTime.values()) {
+
+            val timeWeatherForecast = DayTimeWeatherForecast(daysTime, Weather.randomWeather())
+            timeWeatherForecasts.add(timeWeatherForecast)
+        }
+        return DayWeatherForecast(weekDay, timeWeatherForecasts)
+    }*/
+
+    /*@RequiresApi(Build.VERSION_CODES.O)
+    public fun getWeatherForecasts(weatherDTO: WeatherDTO) : MutableList<DayWeatherForecast> {
+        val weatherForecasts : MutableList<DayWeatherForecast> = arrayListOf()
+        if (weatherDTO.forecasts == null)
+            return weatherForecasts
+
+        for (forecast in weatherDTO.forecasts!!) {
+            val date = LocalDate.parse(forecast.date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            val day = WeekDay.values()[date.dayOfWeek.ordinal]
+
+            val timeWeatherForecasts : MutableList<DayTimeWeatherForecast> = arrayListOf()
+            timeWeatherForecasts.add(DayTimeWeatherForecast(DaysTime.Morning, Weather.fromDTO(forecast.parts!!.morning)))
+            timeWeatherForecasts.add(DayTimeWeatherForecast(DaysTime.Noon, Weather.fromDTO(forecast.parts!!.day)))
+            timeWeatherForecasts.add(DayTimeWeatherForecast(DaysTime.Evening, Weather.fromDTO(forecast.parts!!.evening)))
+            timeWeatherForecasts.add(DayTimeWeatherForecast(DaysTime.Night, Weather.fromDTO(forecast.parts!!.night)))
+
+            weatherForecasts.add((DayWeatherForecast(day, timeWeatherForecasts)))
+        }
+        return weatherForecasts
+    }*/
+}

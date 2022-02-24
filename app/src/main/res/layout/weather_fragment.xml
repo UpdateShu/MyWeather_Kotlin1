@@ -5,15 +5,22 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.WeatherFragment">
+    tools:context=".presentation.weather.WeatherFragment">
 
-    <TextView
+    <ImageView
+        android:id="@+id/weather_back"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.2"/>
+
+    <Button
         android:id="@+id/city"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"
-        android:text="Название города"
-        android:textSize="34sp"></TextView>
+        android:layout_marginTop="5sp"
+        android:text="Город">
+    </Button>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/weather_forecasts_view"

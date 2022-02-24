@@ -2,7 +2,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/teal_200"
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
@@ -26,33 +25,23 @@
                 android:textSize="20sp"
                 tools:text="День недели"></TextView>
 
-            <TextView
-                android:id="@+id/morning_forecast"
+            <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                tools:text="Утро"></TextView>
-
-            <TextView
-                android:id="@+id/noon_forecast"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                tools:text="День"></TextView>
-
-            <TextView
-                android:id="@+id/evening_forecast"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                tools:text="Вечер"></TextView>
-
-            <TextView
-                android:id="@+id/night_forecast"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                tools:text="Ночь"></TextView>
+                android:columnCount="4">
+                <FrameLayout
+                    style="@style/DayTimeStyle"
+                    android:id="@+id/morningWeather"/>
+                <FrameLayout
+                    style="@style/DayTimeStyle"
+                    android:id="@+id/noonWeather"/>
+                <FrameLayout
+                    style="@style/DayTimeStyle"
+                    android:id="@+id/eveningWeather"/>
+                <FrameLayout
+                    style="@style/DayTimeStyle"
+                    android:id="@+id/nightWeather"/>
+            </GridLayout>
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
