@@ -2,6 +2,9 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -10,17 +13,36 @@ android {
     defaultConfig {
         applicationId "com.geekbrains.myweather_kotlin1"
         minSdk 23
-        targetSdk 31
+        targetSdk 29
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
+            storeFile file(properties.getProperty("BUILD_STORE_FILE_NAME", ""))
+            storePassword properties.getProperty("BUILD_STORE_PASSWORD", "")
+            keyAlias properties.getProperty("BUILD_KEY_ALIAS", "")
+            keyPassword properties.getProperty("BUILD_KEY_PASSWORD", "")
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        beta {
+            initWith debug
+            versionNameSuffix "-beta"
+            debuggable true
+        }
+        debug {
+            versionNameSuffix "-debug"
         }
     }
     buildFeatures {
@@ -33,9 +55,46 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    flavorDimensions 'version'
+    productFlavors {
+        freeConfig {
+            dimension 'version'
+            versionNameSuffix '.free'
+        }
+        paid {
+            dimension 'version'
+            versionNameSuffix '.paid'
+        }
+    }
+    /*buildTypes.each {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("apikey.properties").newDataInputStream())
+        def apiKey  = properties.getProperty("yandex_weather_api_key", "")
+        it.buildConfigField "String", "WEATHER_API_KEY", apiKey
+    }*/
 }
 
 dependencies {
+    //GSON
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation platform('com.google.firebase:firebase-bom:29.1.0')
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.2'
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
+    implementation 'androidx.annotation:annotation:1.2.0'
+    implementation 'com.google.firebase:firebase-messaging:23.0.0'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+    //GlideToVectorYou
+    //implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
+
+    //Room
+    implementation 'androidx.room:room-runtime:2.4.1'
+    kapt 'androidx.room:room-compiler:2.4.1'
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.0'
@@ -44,7 +103,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
