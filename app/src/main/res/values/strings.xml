@@ -42,5 +42,7 @@
     <string name="button_search_map">Поиск</string>
     <string name="button_weather_map">Погода</string>
     <string name="marker_start">Start</string>
+    <string name="type_version">Информация о версии</string>
+    <string name="version_options">Опции</string>
 
 </resources>

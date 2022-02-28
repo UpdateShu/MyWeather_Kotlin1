@@ -21,11 +21,13 @@ import android.net.ConnectivityManager
 
 import android.content.IntentFilter
 import android.net.NetworkInfo
+import android.text.Editable
 import com.bumptech.glide.Glide
 import com.geekbrains.myweather_kotlin1.model.*
 import com.geekbrains.myweather_kotlin1.model.forecast.DayWeatherForecast
 import com.geekbrains.myweather_kotlin1.utils.Constants
 import com.geekbrains.myweather_kotlin1.view.LocationsFragment
+import kotlinx.android.synthetic.main.weather_fragment.view.*
 
 @RequiresApi(Build.VERSION_CODES.N)
 class WeatherFragment : Fragment() {
@@ -153,8 +155,15 @@ class WeatherFragment : Fragment() {
                 _currentLocation = location
             }
         }
-        viewModel.weatherLiveData.observe(viewLifecycleOwner, { data -> renderData(data) })
-        refreshWeather()
+        //viewModel.weatherLiveData.observe(viewLifecycleOwner, { data -> renderData(data) })
+        //refreshWeather()
+
+        with (binding) {
+            city.isVisible = false
+            aboutVersion.isVisible = true
+        }
+        val versionView = LayoutInflater.from(context).inflate(R.layout.version_settings,
+            binding.aboutVersion, true)
     }
 
     private fun changeLocation() {

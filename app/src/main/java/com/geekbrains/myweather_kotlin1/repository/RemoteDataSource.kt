@@ -1,6 +1,7 @@
 package com.geekbrains.myweather_kotlin1.repository
 
 import com.geekbrains.myweather_kotlin1.BuildConfig
+import com.geekbrains.myweather_kotlin1.BuildConfig.WEATHER_API_KEY
 import com.geekbrains.myweather_kotlin1.model.ILocation
 import com.geekbrains.myweather_kotlin1.model.WeatherLocation
 import com.geekbrains.myweather_kotlin1.model.forecast.dto.WeatherDTO
@@ -50,7 +51,7 @@ class RemoteDataSource {
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request()
                 .newBuilder()
-                .addHeader("X-Yandex-API-Key", BuildConfig.WEATHER_API_KEY)
+                .addHeader("X-Yandex-API-Key", WEATHER_API_KEY)
                 .build()
 
             return chain.proceed(request)

@@ -1,5 +1,6 @@
 package com.geekbrains.myweather_kotlin1.presentation.weather
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,15 +51,15 @@ class WeatherFragmentAdapter : RecyclerView.Adapter<WeatherFragmentAdapter.Weath
         timeView.findViewById<TextView>(R.id.temp).text = timeWeather.weather.temp.toString()
         val imgView = timeView.findViewById(R.id.imgEvent) as ImageView
         timeWeather.weather.weatherEvent.eventImg?.let {
-//            GlideToVectorYou.justLoadImage(
-//                activity,
-//                Uri.parse("https://yastatic.net/weather/i/icons/blueye/color/svg/${it}.svg"),
-//                weatherIcon
-//            )
-//        }
+            /*GlideToVectorYou.justLoadImage(activity, IMAGE_URI, targetImageView)
+            GlideToVectorYou.justLoadImage(
+                activity,
+                Uri.parse("https://yastatic.net/weather/i/icons/blueye/color/svg/${it}.svg"),
+                weatherIcon*/
+
+        }
            // Glide.with(parent.context)
         // .load(timeWeather.weather.weatherEvent.eventImg)
          //       .into(imgView)
-        }
     }
 }

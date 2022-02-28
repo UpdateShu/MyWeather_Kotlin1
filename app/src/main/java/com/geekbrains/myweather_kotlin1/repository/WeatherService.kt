@@ -22,7 +22,6 @@ private const val REQUEST_TIMEOUT = 10000
 
 private const val YOUR_API_KEY = BuildConfig.WEATHER_API_KEY
 private const val REQUEST_API_KEY = "X-Yandex-API-Key"
-private const val MAIN_LINK = "https://api.weather.yandex.ru/v2/forecast?"
 
 const val WEATHER_INTENT_FILTER = "WEATHER INTENT FILTER"
 const val WEATHER_LOAD_RESULT_EXTRA = "LOAD RESULT"
@@ -64,7 +63,8 @@ class WeatherService(name: String = "WeatherService") : IntentService(name)  {
     {
         try {
             val uri =
-                URL("https://api.weather.yandex.ru/v2/forecast?lat=${lat}&lon=${lon}&limit=${7}")
+                URL("https://api.weather.yandex.ru/v2/informers?"//forecast?
+                        + "lat=${lat}&lon=${lon}&limit=${7}")
 
             lateinit var urlConnection: HttpsURLConnection
             try {
